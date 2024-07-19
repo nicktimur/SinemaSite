@@ -21,9 +21,11 @@ public partial class Kullanici
 
     public int KullaniciTipi { get; set; } = 0;
 
+    public float Bakiye { get; set; } = 0f;
+
     public DateTime? OlusturulmaTarihi { get; set; }
 
-    public bool? AktifMi { get; set; }
+    public bool AktifMi { get; set; } = true;
 
     public DateTime? SilinmeTarihi { get; set; }
 

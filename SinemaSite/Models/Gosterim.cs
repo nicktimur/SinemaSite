@@ -11,6 +11,8 @@ public partial class Gosterim
 
     public long? FilmId { get; set; }
 
+    public float Ucret { get; set; } 
+    
     public DateTime? SunumTarihi { get; set; }
 
     public DateTime? OlusturulmaTarihi { get; set; }

@@ -1,7 +1,150 @@
 ﻿@{
     var user = Context.Items["CurrentUser"] as Kullanici;
 }
-@if (user is not null)
-{
-    <h1>@user.Isim @user.Soyisim @user.Email</h1>    
+@model Kullanici
+@{
+    ViewData["Title"] = "Profil";
 }
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Profil</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+
+                    <!-- Profile Image -->
+                    <div class="card card-primary card-outline">
+                        <div class="card-body box-profile">
+                            <div class="text-center">
+                                <img class="profile-user-img img-fluid img-circle"
+                                     src="~/img/user4-128x128.jpg"
+                                     alt="User profile picture">
+                            </div>
+
+                            <h3 class="profile-username text-center">@user.Isim @user.Soyisim</h3>
+
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                   
+                </div>
+                <!-- /.col -->
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-header p-2">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a class="nav-link active" href="#edit_profile" data-toggle="tab">Bilgilerini düzenle</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#tickets" data-toggle="tab">Biletlerim</a></li>
+                            </ul>
+                        </div><!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="active tab-pane" id="edit_profile">
+                                    <form method="post" asp-action="Profile">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        @if (ViewBag.Error != null)
+                                        {
+                                            <div id="error-message" value="@ViewBag.Error"></div>
+                                            <div class="form-group" style="color: red;">@ViewBag.Error</div>
+                                        }
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Kullanıcı Adı:</label>
+                                            <div class="col-sm-10">
+                                                <input asp-for="KullaniciAdi" type="text" id="kullaniciAdi" class="form-control" placeholder="@user.KullaniciAdi">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">İsim:</label>
+                                            <div class="col-sm-10">
+                                                <input asp-for="Isim" type="text" id="isim" class="form-control" placeholder="@user.Isim">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Soyisim:</label>
+                                            <div class="col-sm-10">
+                                                <input asp-for="Soyisim" type="text" id="soyisim" class="form-control" placeholder="@user.Soyisim">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Email:</label>
+                                            <div class="col-sm-10">
+                                                <input asp-for="Email" type="email" id="email" class="form-control" placeholder="@user.Email">
+                                            </div>
+                                        </div>
+                                        <a asp-controller="Account" asp-action="ChangePassword">Şifre Değiştir</a>
+                                        <hr>
+                                        <div class="form-group row">
+                                            <div class="col-sm-10">
+                                                <button type="submit" class="btn btn-success">Değişiklikleri Kaydet</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <hr>
+                                    <form method="post" asp-action="DeleteUser">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-10">
+                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-danger">
+                                                    Hesabı Sil
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" id="modal-danger">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content bg-danger">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Hesap silme işleminden emin misiniz?</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Hesabınız silinecektir. Emin misiniz?</p>
+                                                    </div>
+                                                    <div class="modal-footer justify-content-between">
+                                                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">Kapat</button>
+                                                        <button type="submit" class="btn btn-outline-light">Sil</button>
+                                                    </div>
+                                                </div>
+                                                <!-- /.modal-content -->
+                                            </div>
+                                            <!-- /.modal-dialog -->
+                                        </div>
+                                        <!-- /.modal -->
+                                    </form>
+                                </div>
+                                <!-- /.tab-pane -->
+
+                                <div class="tab-pane" id="tickets">
+                                    
+                                </div>
+                                <!-- /.tab-pane -->
+
+                               
+                            </div>
+                            <!-- /.tab-content -->
+                        </div><!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>

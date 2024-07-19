@@ -21,6 +21,11 @@ namespace SinemaSite.Controllers
 
         public IActionResult Logout()
         {
+            var userJson = HttpContext.Session.GetString("user");
+            var userdata = JsonConvert.DeserializeObject<Kullanici>(userJson);
+            var user = _context.Kullanicis.Where(x => x.KullaniciAdi == userdata.KullaniciAdi).FirstOrDefault();
+            user.SonAktifTarih = DateTime.Now;
+            _context.SaveChanges();
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
@@ -54,6 +59,7 @@ namespace SinemaSite.Controllers
                     {
                         var userJson = JsonConvert.SerializeObject(user);
                         HttpContext.Session.SetString("user", userJson);
+                        user.SonAktifTarih = DateTime.Now;
                         return RedirectToAction("Index", "Home");
                     }
                     else
@@ -62,7 +68,7 @@ namespace SinemaSite.Controllers
                         ViewBag.Error = "Giriş işlemi lütfen manuel olarak deneyiniz.";
                         return View(kullanici);
                     }
-                    
+
                 }
                 catch
                 {
@@ -88,12 +94,18 @@ namespace SinemaSite.Controllers
             if (kullanici is not null)
             {
                 var user = _context.Kullanicis.Where(x => x.KullaniciAdi == kullanici.KullaniciAdi && x.Sifre == kullanici.Sifre).FirstOrDefault();
-                if (user != null) 
+                if (user != null && user.AktifMi)
                 {
+                    user.SonAktifTarih = DateTime.Now;
+                    _context.SaveChanges();
                     var userJson = JsonConvert.SerializeObject(user);
                     HttpContext.Session.SetString("user", userJson);
 
                     return RedirectToAction("Index", "Home");
+                }
+                else if (!user.AktifMi)
+                {
+                    ModelState.AddModelError("", "Bu kullanıcı silinmiş");
                 }
                 else
                 {
@@ -109,6 +121,60 @@ namespace SinemaSite.Controllers
         public IActionResult Profile()
         {
             return View();
+        }
+
+        [SendUserInfo]
+        [HttpPost]
+        public IActionResult Profile(UserEditViewModel kullanici)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            var userJson = HttpContext.Session.GetString("user");
+            var userdata = JsonConvert.DeserializeObject<Kullanici>(userJson);
+            var user = _context.Kullanicis.Where(x => x.KullaniciAdi == userdata.KullaniciAdi).FirstOrDefault();
+
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Kullanıcı bulunamadı.");
+                return View();
+            }
+            try
+            {
+                user.KullaniciAdi = kullanici.KullaniciAdi ?? user.KullaniciAdi;
+                user.Isim = kullanici.Isim ?? user.Isim;
+                user.Soyisim = kullanici.Soyisim ?? user.Soyisim;
+                user.Email = kullanici.Email ?? user.Email;
+                user.GuncellemeTarihi = DateTime.Now;
+
+                _context.SaveChanges();
+                HttpContext.Session.Clear();
+                userJson = JsonConvert.SerializeObject(user);
+                HttpContext.Session.SetString("user", userJson);
+
+                return View();
+            }
+            catch
+            {
+                ViewBag.Error = "Lütfen kullanılmayan bir mail veya kullanıcı adı giriniz.";
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteUser()
+        {
+            var userJson = HttpContext.Session.GetString("user");
+            var userdata = JsonConvert.DeserializeObject<Kullanici>(userJson);
+            var user = _context.Kullanicis.Where(x => x.KullaniciAdi == userdata.KullaniciAdi).FirstOrDefault();
+            user.SilinmeTarihi = DateTime.Now;
+            user.AktifMi = false;
+            _context.SaveChanges();
+            HttpContext.Session.Clear();
+
+            return RedirectToAction("Index", "Home");
         }
 
     }
