@@ -1,0 +1,7 @@
+﻿@{
+    var user = Context.Items["CurrentUser"] as Kullanici;
+}
+@if (user is not null)
+{
+    <h1>@user.Isim @user.Soyisim @user.Email</h1>    
+}

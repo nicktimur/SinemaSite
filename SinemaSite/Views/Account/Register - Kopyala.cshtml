@@ -1,0 +1,76 @@
+﻿@using SinemaSite.Models;
+@model Kullanici;
+
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+<!-- Section: Design Block -->
+<section class="text-center text-lg-start">
+    <style>
+        .cascading-right {
+            margin-right: -50px;
+        }
+
+    </style>
+
+    <!-- Jumbotron -->
+    <div class="container py-4">
+        <div class="row g-0 align-items-center">
+            <div class="col-lg-8 mb-5 mb-lg-0">
+                <div class="card cascading-right bg-body-tertiary">
+                    <div class="card-body p-5 shadow-5 text-center">
+                        <h2 class="fw-bold mb-5">Şimdi Kayıt Ol</h2>
+                        <form method="post" asp-action="Register">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            @if(ViewBag.Message != null)
+                            {
+                                <div class="form-group" style="color: green;">@ViewBag.Message</div>
+                            }
+                            <!-- 2 column grid layout with text inputs for the first and last names -->
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <input asp-for="Isim" type="text" id="isim" class="form-control" required />
+                                        <label class="form-label">İsim</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <input asp-for="Soyisim" type="text" id="soyisim" class="form-control" required />
+                                        <label class="form-label">Soyisim</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Email input -->
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <input asp-for="KullaniciAdi" type="text" id="kullaniciAdi" class="form-control" required />
+                                <label class="form-label">Kullanıcı Adı</label>
+                            </div>
+
+                            <!-- Email input -->
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <input asp-for="Email" type="email" id="email" class="form-control" required />
+                                <label class="form-label" >Email Adresi</label>
+                            </div>
+
+                            <!-- Password input -->
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <input asp-for="Sifre" type="password" id="sifre" class="form-control" required />
+                                <label class="form-label" >Şifre</label>
+                            </div>
+
+                            <!-- Submit button -->
+                            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">
+                                Kayıt ol
+                            </button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Jumbotron -->
+</section>
+<!-- Section: Design Block -->
