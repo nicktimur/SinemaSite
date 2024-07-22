@@ -93,29 +93,32 @@ namespace SinemaSite.Controllers
         {
             if (kullanici is not null)
             {
-                var user = _context.Kullanicis.Where(x => x.KullaniciAdi == kullanici.KullaniciAdi && x.Sifre == kullanici.Sifre).FirstOrDefault();
+                var user = _context.Kullanicis.Where(x => x.KullaniciAdi == kullanici.KullaniciAdi).FirstOrDefault();
                 if (user != null && user.AktifMi)
                 {
-                    user.SonAktifTarih = DateTime.Now;
-                    _context.SaveChanges();
-                    var userJson = JsonConvert.SerializeObject(user);
-                    HttpContext.Session.SetString("user", userJson);
-                    if(user.KullaniciTipi != 2)
+                    if(user.Sifre == kullanici.Sifre)
                     {
-                        return RedirectToAction("Index", "Home");
+                        user.SonAktifTarih = DateTime.Now;
+                        _context.SaveChanges();
+                        var userJson = JsonConvert.SerializeObject(user);
+                        HttpContext.Session.SetString("user", userJson);
+                        if (user.KullaniciTipi != 2)
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Admin");
+                        }
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Admin");
+                        ModelState.AddModelError("", "Kullanıcı adı veya şifre hatalı.");
                     }
                 }
                 else if (!user.AktifMi)
                 {
                     ModelState.AddModelError("", "Bu kullanıcı silinmiş");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Kullanıcı adı veya şifre hatalı.");
                 }
                 return View();
             }

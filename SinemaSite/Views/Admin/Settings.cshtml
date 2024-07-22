@@ -16,8 +16,6 @@
     var users = ViewBag.Users as IEnumerable<SinemaSite.Models.Kullanici>;
 }
 
-
-
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -31,86 +29,94 @@
             </div>
         </div><!-- /.container-fluid -->
     </section>
-
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                   
-                </div>
-                <!-- /.col -->
-                <div class="col-md-15">
+                <div class="col-md-12">
                     <div class="card">
                         <div class="card-header p-2">
                             <ul class="nav nav-pills">
                                 <li class="nav-item"><a class="nav-link active" href="#show_users" data-toggle="tab">Kullanıcılar</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#other" data-toggle="tab">Diğer</a></li>
                             </ul>
-                            <br />
                         </div>
-                            <div class="active tab-pane" id="edit_profile">
-                                <div class="col-md-15">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="card-title">Kullanıcılar</h3>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="active tab-pane" id="show_users">
+                                    <div class="col-md-15">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Kullanıcılar</h3>
+                                            </div>
+                                            <div id="myGrid" style="height: 50%" class="ag-theme-quartz"></div>
+                                            <!-- /.card-body -->
                                         </div>
-                                        <div class="card-body p-0">
-                                            <table class="table">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width: 10px">Id</th>
-                                                        <th>İsim</th>
-                                                        <th>Soyisim</th>
-                                                        <th style="width: 40px">Kullanıcı Adı</th>
-                                                        <th>Email</th>
-                                                        <th>Kullanıcı Tipi</th>
-                                                        <th>Silinme Tarihi</th>
-                                                        <th>Güncelleme Tarihi</th>
-                                                        <th>Son Aktif Tarihi</th>
-                                                        <th>Bakiye</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var otherUser in users)
-                                                    {
-                                                        var userType = (UserType)otherUser.KullaniciTipi;
-
-                                                        <tr>
-                                                            <td>@otherUser.Id</td>
-                                                            <td>@otherUser.Isim</td>
-                                                            <td>@otherUser.Soyisim</td>
-                                                            <td>@otherUser.KullaniciAdi</td>
-                                                            <td>@otherUser.Email</td>
-                                                            <td>@userType</td>
-                                                            <td>@otherUser.SilinmeTarihi</td>
-                                                            <td>@otherUser.GuncellemeTarihi</td>
-                                                            <td>@otherUser.SonAktifTarih</td>
-                                                            <td>@otherUser.Bakiye</td>
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <!-- /.card-body -->
+                                        <!-- /.card -->
                                     </div>
-                                    <!-- /.card -->
+
                                 </div>
+                                <!-- /.tab-pane -->
+
+                                <div class="tab-pane" id="other">
+                                </div>
+                                <!-- /.tab-pane -->
+
 
                             </div>
-                            <!-- /.tab-pane -->
-
-                            <div class="tab-pane" id="other">
-
-                            </div>
-                            <!-- /.tab-pane -->
-
-                        </div>
-                        <!-- /.card-body -->
+                            <!-- /.tab-content -->
+                        </div><!-- /.card-body -->
                     </div>
-                    <!-- /.col -->
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
             </div>
             <!-- /.row -->
-        
+        </div><!-- /.container-fluid -->
     </section>
-<!-- /.content -->
-  </div>
+</div>
+<script src="~/js/AdminGrid.js"></script>
+@* <script>
+    let lastSortedColumn = null;
+    let sortOrder = 'asc';
+
+    function sortTable(column) {
+        const table = document.getElementById("userTable");
+        const tbody = table.querySelector("tbody");
+        const rows = Array.from(tbody.querySelectorAll("tr"));
+        const thead = table.querySelector("thead");
+        const headers = Array.from(thead.querySelectorAll("th"));
+        const index = headers.findIndex(th => th.innerText.includes(column));
+        var sortText = (headers[index].innerText)
+
+
+        if (lastSortedColumn === column) {
+            sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
+        } else {
+            sortOrder = 'asc';
+        }
+        lastSortedColumn = column;
+
+        const sortedRows = rows.sort((rowA, rowB) => {
+            const cellA = rowA.children[index].innerText;
+            const cellB = rowB.children[index].innerText;
+
+            const isNumeric = !isNaN(cellA) && !isNaN(cellB);
+            let comparison = 0;
+
+            if (isNumeric) {
+                comparison = parseFloat(cellA) - parseFloat(cellB);
+            } else {
+                comparison = cellA.localeCompare(cellB);
+            }
+
+            return sortOrder === 'asc' ? comparison : -comparison;
+        });
+
+        // Tabloyu yeniden oluştur
+        tbody.innerHTML = "";
+        sortedRows.forEach(row => tbody.appendChild(row));
+    }
+</script> *@
+
