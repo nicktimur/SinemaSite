@@ -11,6 +11,8 @@ public partial class Film
 
     public int? Sure { get; set; }
 
+    public string Tur {  get; set; }
+
     public DateTime? OlusturulmaTarihi { get; set; }
 
     public DateTime? SilinmeTarihi { get; set; }

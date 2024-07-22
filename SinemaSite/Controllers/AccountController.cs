@@ -48,6 +48,7 @@ namespace SinemaSite.Controllers
                 yeniKullanici.KullaniciAdi = kullanici.KullaniciAdi;
                 yeniKullanici.Email = kullanici.Email;
                 yeniKullanici.Sifre = kullanici.Sifre;
+                yeniKullanici.AktifMi = true;
                 try
                 {
                     _context.Kullanicis.Add(yeniKullanici);

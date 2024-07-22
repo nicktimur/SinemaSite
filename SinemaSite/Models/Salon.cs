@@ -11,7 +11,7 @@ public partial class Salon
 
     public int? SalonMumarasi { get; set; }
 
-    public string SalonTipi { get; set; } = null!;
+    public int SalonTipi { get; set; } = 0;
 
     public long? SinemaId { get; set; }
 

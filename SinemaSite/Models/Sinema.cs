@@ -7,9 +7,9 @@ public partial class Sinema
 {
     public long Id { get; set; }
 
-    public string? Isim { get; set; }
+    public string Isim { get; set; }
 
-    public string? Konum { get; set; }
+    public string Adres { get; set; }
 
     public DateTime? OlusturulmaTarihi { get; set; }
 

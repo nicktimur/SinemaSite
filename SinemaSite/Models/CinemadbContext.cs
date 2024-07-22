@@ -186,7 +186,7 @@ public partial class CinemadbContext : DbContext
             entity.Property(e => e.Isim)
                 .HasMaxLength(255)
                 .HasColumnName("isim");
-            entity.Property(e => e.Konum)
+            entity.Property(e => e.Adres)
                 .HasMaxLength(255)
                 .HasColumnName("konum");
             entity.Property(e => e.OlusturulmaTarihi)

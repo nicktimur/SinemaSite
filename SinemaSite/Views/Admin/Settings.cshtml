@@ -2,14 +2,6 @@
     var user = Context.Items["CurrentUser"] as Kullanici;
 }
 @model Kullanici
-@functions {
-    public enum UserType
-    {
-        Müşteri = 0,
-        Personel = 1,
-        Admin = 2
-    }
-}
 @{
     ViewData["Title"] = "Ayarlar";
     Layout = "_LayoutAdmin";
@@ -50,7 +42,7 @@
                                             <div class="card-header">
                                                 <h3 class="card-title">Kullanıcılar</h3>
                                             </div>
-                                            <div id="myGrid" style="height: 50%" class="ag-theme-quartz"></div>
+                                            <div id="myGrid" style="height: 600px" class="ag-theme-quartz"></div>
                                             <!-- /.card-body -->
                                         </div>
                                         <!-- /.card -->
@@ -76,47 +68,73 @@
         </div><!-- /.container-fluid -->
     </section>
 </div>
-<script src="~/js/AdminGrid.js"></script>
-@* <script>
-    let lastSortedColumn = null;
-    let sortOrder = 'asc';
+<script>
+    let gridApi;
+    var users = @Html.Raw(ViewBag.Users);
+    var rowData = [];
+    const UserTypeNames = {
+        0: 'Müşteri',
+        1: 'Personel',
+        2: 'Admin'
+    };
 
-    function sortTable(column) {
-        const table = document.getElementById("userTable");
-        const tbody = table.querySelector("tbody");
-        const rows = Array.from(tbody.querySelectorAll("tr"));
-        const thead = table.querySelector("thead");
-        const headers = Array.from(thead.querySelectorAll("th"));
-        const index = headers.findIndex(th => th.innerText.includes(column));
-        var sortText = (headers[index].innerText)
-
-
-        if (lastSortedColumn === column) {
-            sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
-        } else {
-            sortOrder = 'asc';
-        }
-        lastSortedColumn = column;
-
-        const sortedRows = rows.sort((rowA, rowB) => {
-            const cellA = rowA.children[index].innerText;
-            const cellB = rowB.children[index].innerText;
-
-            const isNumeric = !isNaN(cellA) && !isNaN(cellB);
-            let comparison = 0;
-
-            if (isNumeric) {
-                comparison = parseFloat(cellA) - parseFloat(cellB);
-            } else {
-                comparison = cellA.localeCompare(cellB);
-            }
-
-            return sortOrder === 'asc' ? comparison : -comparison;
+    users.forEach(function (user) {
+        const userType = UserTypeNames[user.KullaniciTipi];
+        rowData.push({
+            "İsim": user.Isim,
+            "Soyisim": user.Soyisim,
+            "Kullanıcı Adı": user.KullaniciAdi,
+            "Email": user.Email,
+            "Kullanıcı Tipi": userType,
+            "Bakiye": user.Bakiye + " TL",
+            "Aktif Mi?": user.AktifMi,
+            "Silinme Tarihi": user.SilinmeTarihi,
+            "Güncelleme Tarihi": user.GuncellemeTarihi,
+            "Son Aktif Tarihi": user.SonAktifTarih,
         });
+    });
 
-        // Tabloyu yeniden oluştur
-        tbody.innerHTML = "";
-        sortedRows.forEach(row => tbody.appendChild(row));
-    }
-</script> *@
+    const gridOptions = {
+        rowData: rowData,
+        columnDefs: [
+            { field: "İsim", },
+            { field: "Soyisim" },
+            { field: "Kullanıcı Adı" },
+            { field: "Email" },
+            { 
+                field: "Kullanıcı Tipi",
+                cellEditor: "agSelectCellEditor",
+                cellEditorParams: {
+                    values: [
+                        "Müşteri",
+                        "Personel",
+                        "Admin",
+                    ],
+                }
+            },
+            { field: "Bakiye", filter: "agNumberColumnFilter" },
+            { field: "Aktif Mi?" },
+            { field: "Silinme Tarihi" },
+            { field: "Güncelleme Tarihi" },
+            { field: "Son Aktif Tarihi" },
+        ],
+        defaultColDef: {
+            filter: "agTextColumnFilter",
+            floatingFilter: true,
+            flex: 1,
+            minWidth: 100,
+            editable: false,
+        },
+        rowSelection: "multiple",
+        suppressRowClickSelection: true,
+        pagination: true,
+        paginationPageSize: 5,
+        paginationPageSizeSelector: [5, 10, 15],
+    };
+    const style = document.createElement('style');
+
+    const gridDiv = document.querySelector("#myGrid");
+    gridApi = agGrid.createGrid(gridDiv, gridOptions);
+</script>
+
 

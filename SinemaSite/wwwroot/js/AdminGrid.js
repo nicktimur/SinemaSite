@@ -1,5 +1,5 @@
 ﻿let gridApi;
-console.log("Çalıştı");
+var users = @Html.Raw(ViewBag.Users);
 
 const gridOptions = {
     rowData: [

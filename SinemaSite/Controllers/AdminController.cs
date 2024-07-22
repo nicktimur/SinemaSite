@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SinemaSite.Models;
+using Newtonsoft.Json;
 
 namespace SinemaSite.Controllers
 {
@@ -28,7 +29,7 @@ namespace SinemaSite.Controllers
         public IActionResult Settings()
         {
             var users = _db.Kullanicis.ToList();
-            ViewBag.Users = users;
+            ViewBag.Users = JsonConvert.SerializeObject(users);
             return View();
         }
 
