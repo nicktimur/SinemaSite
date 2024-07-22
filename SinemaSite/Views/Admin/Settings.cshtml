@@ -1,0 +1,116 @@
+﻿@{
+    var user = Context.Items["CurrentUser"] as Kullanici;
+}
+@model Kullanici
+@functions {
+    public enum UserType
+    {
+        Müşteri = 0,
+        Personel = 1,
+        Admin = 2
+    }
+}
+@{
+    ViewData["Title"] = "Ayarlar";
+    Layout = "_LayoutAdmin";
+    var users = ViewBag.Users as IEnumerable<SinemaSite.Models.Kullanici>;
+}
+
+
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Profil</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                   
+                </div>
+                <!-- /.col -->
+                <div class="col-md-15">
+                    <div class="card">
+                        <div class="card-header p-2">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a class="nav-link active" href="#show_users" data-toggle="tab">Kullanıcılar</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#other" data-toggle="tab">Diğer</a></li>
+                            </ul>
+                            <br />
+                        </div>
+                            <div class="active tab-pane" id="edit_profile">
+                                <div class="col-md-15">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Kullanıcılar</h3>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 10px">Id</th>
+                                                        <th>İsim</th>
+                                                        <th>Soyisim</th>
+                                                        <th style="width: 40px">Kullanıcı Adı</th>
+                                                        <th>Email</th>
+                                                        <th>Kullanıcı Tipi</th>
+                                                        <th>Silinme Tarihi</th>
+                                                        <th>Güncelleme Tarihi</th>
+                                                        <th>Son Aktif Tarihi</th>
+                                                        <th>Bakiye</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var otherUser in users)
+                                                    {
+                                                        var userType = (UserType)otherUser.KullaniciTipi;
+
+                                                        <tr>
+                                                            <td>@otherUser.Id</td>
+                                                            <td>@otherUser.Isim</td>
+                                                            <td>@otherUser.Soyisim</td>
+                                                            <td>@otherUser.KullaniciAdi</td>
+                                                            <td>@otherUser.Email</td>
+                                                            <td>@userType</td>
+                                                            <td>@otherUser.SilinmeTarihi</td>
+                                                            <td>@otherUser.GuncellemeTarihi</td>
+                                                            <td>@otherUser.SonAktifTarih</td>
+                                                            <td>@otherUser.Bakiye</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- /.card-body -->
+                                    </div>
+                                    <!-- /.card -->
+                                </div>
+
+                            </div>
+                            <!-- /.tab-pane -->
+
+                            <div class="tab-pane" id="other">
+
+                            </div>
+                            <!-- /.tab-pane -->
+
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        
+    </section>
+<!-- /.content -->
+  </div>

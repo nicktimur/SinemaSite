@@ -100,8 +100,14 @@ namespace SinemaSite.Controllers
                     _context.SaveChanges();
                     var userJson = JsonConvert.SerializeObject(user);
                     HttpContext.Session.SetString("user", userJson);
-
-                    return RedirectToAction("Index", "Home");
+                    if(user.KullaniciTipi != 2)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Admin");
+                    }
                 }
                 else if (!user.AktifMi)
                 {

@@ -3,9 +3,9 @@
 }
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a asp-controller="Home" asp-action="Index" class="brand-link">
+    <a asp-controller="Admin" asp-action="Index" class="brand-link">
         <img src="~/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">Sinema Site</span>
+        <span class="brand-text font-weight-light">Admin Sayfası</span>
     </a>
 
     <!-- Sidebar -->
@@ -37,42 +37,16 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
                      with font-awesome or any other icon font library -->
-                <li class="nav-item">
-                    <a class="nav-link">
-                        <i class="fas fa-circle nav-icon"></i>
-                        <p>
-                            Filmler
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link">
-                        <i class="fas fa-circle nav-icon"></i>
-                        <p>
-                            Salonlar
-                        </p>
-                    </a>
-                </li>
                 @if(user is not null)
                 {
                     <li class="nav-item">
-                        <a asp-controller="Account" asp-action="Profile" class="nav-link">
+                        <a asp-controller="Admin" asp-action="Settings" class="nav-link">
                             <i class="fas fa-user nav-icon"></i>
                             <p>
-                                Profil
+                                Ayarlar
                             </p>
                         </a>
-                    </li>
-                    @if(user.KullaniciTipi == 2){
-                        <li class="nav-item">
-                            <a asp-controller="Admin" asp-action="Index" class="nav-link">
-                                <i class="fas fa-circle nav-icon"></i>
-                                <p>
-                                    Admin Sayfası
-                                </p>
-                            </a>
-                        </li>
-                    }
+                    </li>                    
                 }
             </ul>
         </nav>
