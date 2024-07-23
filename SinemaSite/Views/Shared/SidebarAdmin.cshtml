@@ -37,13 +37,38 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
                      with font-awesome or any other icon font library -->
+
                 @if(user is not null)
                 {
+                    <li class="nav-item">
+                        <a asp-controller="Admin" asp-action="AddSalon" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>
+                                Salon Ekle
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Admin" asp-action="AddSinema" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>
+                                Sinema Ekle
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Admin" asp-action="Salons" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>
+                                Salonlar
+                            </p>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a asp-controller="Admin" asp-action="Settings" class="nav-link">
                             <i class="fas fa-user nav-icon"></i>
                             <p>
-                                Ayarlar
+                                Kullanıcılar
                             </p>
                         </a>
                     </li>                    

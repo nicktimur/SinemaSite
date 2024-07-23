@@ -1,0 +1,148 @@
+﻿@{
+    var user = Context.Items["CurrentUser"] as Kullanici;
+}
+@model Kullanici
+@{
+    ViewData["Title"] = "Ayarlar";
+    Layout = "_LayoutAdmin";
+    var sinemalar = ViewBag.Sinemalar as IEnumerable<SinemaSite.Models.Sinema>;
+}
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Profil</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header p-2">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a class="nav-link active" href="#show_salons" data-toggle="tab">Salonlar</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="active tab-pane" id="show_salons">
+                                    <div class="col-md-15">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Salonlar</h3>
+                                            </div>
+                                            <div id="myGrid" style="height: 600px" class="ag-theme-quartz"></div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+
+                                </div>
+                                <!-- /.tab-pane -->
+
+                                <div class="tab-pane" id="other">
+                                </div>
+                                <!-- /.tab-pane -->
+
+
+                            </div>
+                            <!-- /.tab-content -->
+                        </div><!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+</div>
+<script>
+    let gridApi;
+    var sinemalar = @Html.Raw(ViewBag.Sinemalar);
+    var rowData = [];
+    const SalonTypeNames = {
+        0: 'Standart',
+        1: 'IMAX',
+        2: '4DX'
+    };
+
+
+    sinemalar.forEach(function (sinema) {
+        sinema.Salons.forEach(function (salon) {
+            const salonType = SalonTypeNames[salon.SalonTipi];
+            rowData.push({
+                "Sinema Adı": sinema.Isim,
+                "Salon Numarası": salon.SalonNumarasi,
+                "Koltuk Sayısı": salon.ToplamKoltuk,
+                "Salon Tipi": salonType,
+                "Silinme Tarihi": salon.SilinmeTarihi,
+                "Güncelleme Tarihi": salon.GuncellemeTarihi,
+                "Son Aktif Tarihi": salon.SonAktifTarih,
+            });
+        });
+    });
+
+    const gridOptions = {
+        rowData: rowData,
+        columnDefs: [
+            { 
+                field: "Sinema Adı",
+                filter: 'agTextColumnFilter'
+            },
+            { 
+                field: "Salon Numarası",
+                filter: 'agNumberColumnFilter'
+            },
+            { 
+                field: "Koltuk Sayısı",
+                filter: 'agNumberColumnFilter'
+            },
+            { 
+                field: "Salon Tipi",
+                filter: 'agTextColumnFilter'
+            },
+            { 
+                field: "Silinme Tarihi",
+                filter: 'agDateColumnFilter'
+            },
+            { 
+                field: "Güncelleme Tarihi",
+                filter: 'agDateColumnFilter'
+            },
+            { 
+                field: "Son Aktif Tarihi",
+                filter: 'agDateColumnFilter'
+            },
+        ],
+        defaultColDef: {
+            flex: 1,
+            sortable: true,
+            filter: true,
+            resizable: true,
+            floatingFilter: true,
+            minWidth: 200,
+        },
+        rowSelection: "multiple",
+        suppressRowClickSelection: true,
+        pagination: true,
+        paginationPageSize: 10,
+        paginationPageSizeSelector: [10, 20, 30],
+    };
+    const style = document.createElement('style');
+
+    const gridDiv = document.querySelector("#myGrid");
+    gridApi = agGrid.createGrid(gridDiv, gridOptions);
+</script>
+
+

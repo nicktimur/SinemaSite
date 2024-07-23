@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SinemaSite.Models;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,6 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true; // Cookie'nin sadece HTTP üzerinden eriþilebilir olmasýný saðlar
     options.Cookie.IsEssential = true; // GDPR ve diðer veri koruma düzenlemeleri için gerekli
 });
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var connectionString = "Server=localhost;User ID=root;Password=1111;Database=cinemadb";

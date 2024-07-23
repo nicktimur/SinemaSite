@@ -157,9 +157,8 @@ public partial class CinemadbContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp")
                 .HasColumnName("olusturulma_tarihi");
-            entity.Property(e => e.SalonMumarasi).HasColumnName("salon_mumarasi");
+            entity.Property(e => e.SalonNumarasi).HasColumnName("salon_numarasi");
             entity.Property(e => e.SalonTipi)
-                .HasColumnType("enum('Standart','IMAX','4DX')")
                 .HasColumnName("salon_tipi");
             entity.Property(e => e.SilinmeTarihi)
                 .HasColumnType("timestamp")
@@ -188,7 +187,7 @@ public partial class CinemadbContext : DbContext
                 .HasColumnName("isim");
             entity.Property(e => e.Adres)
                 .HasMaxLength(255)
-                .HasColumnName("konum");
+                .HasColumnName("adres");
             entity.Property(e => e.OlusturulmaTarihi)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp")

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SinemaSite.Models;
 
@@ -9,7 +10,7 @@ public partial class Salon
 
     public int? ToplamKoltuk { get; set; }
 
-    public int? SalonMumarasi { get; set; }
+    public int? SalonNumarasi { get; set; }
 
     public int SalonTipi { get; set; } = 0;
 
@@ -23,5 +24,6 @@ public partial class Salon
 
     public virtual ICollection<Gosterim> Gosterims { get; set; } = new List<Gosterim>();
 
+    [JsonIgnore]
     public virtual Sinema? Sinema { get; set; }
 }

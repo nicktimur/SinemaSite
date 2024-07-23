@@ -43,6 +43,59 @@
                                                 <h3 class="card-title">Kullanıcılar</h3>
                                             </div>
                                             <div id="myGrid" style="height: 600px" class="ag-theme-quartz"></div>
+                                                <div class="modal fade" id="edit_modal">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title">Kullanıcıyı Düzenle</h4>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form method="post" asp-action="Settings">
+                                                                    <div class="modal-body">
+                                                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                                        <div class="form-group row">
+                                                                            <label class="col-sm-2 col-form-label">Kullanıcı Adı:</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input asp-for="KullaniciAdi" type="text" id="kullaniciAdi" class="form-control" placeholder="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group row">
+                                                                            <label class="col-sm-2 col-form-label">İsim:</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input asp-for="Isim" type="text" id="isim" class="form-control" placeholder="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group row">
+                                                                            <label class="col-sm-2 col-form-label">Soyisim:</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input asp-for="Soyisim" type="text" id="soyisim" class="form-control" placeholder="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group row">
+                                                                            <label class="col-sm-2 col-form-label">Email:</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input asp-for="Email" type="email" id="email" class="form-control" placeholder="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <hr>
+
+                                                                    </div>
+                                                                    <div class="modal-footer justify-content-between">
+                                                                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-outline-light">Kapat</button>
+                                                                        <button type="submit" class="btn btn-outline-light">Düzenlemeyi Kaydet</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                        <!-- /.modal-content -->
+                                                    </div>
+                                                    <!-- /.modal-dialog -->
+                                                </div>
+                                                <!-- /.modal -->
+                                                </div>
                                             <!-- /.card-body -->
                                         </div>
                                         <!-- /.card -->
@@ -69,6 +122,7 @@
     </section>
 </div>
 <script>
+
     let gridApi;
     var users = @Html.Raw(ViewBag.Users);
     var rowData = [];
@@ -78,25 +132,29 @@
         2: 'Admin'
     };
 
+
     users.forEach(function (user) {
         const userType = UserTypeNames[user.KullaniciTipi];
         rowData.push({
+            "Id": user.Id,
             "İsim": user.Isim,
             "Soyisim": user.Soyisim,
             "Kullanıcı Adı": user.KullaniciAdi,
             "Email": user.Email,
             "Kullanıcı Tipi": userType,
-            "Bakiye": user.Bakiye + " TL",
+            "Bakiye": user.Bakiye,
             "Aktif Mi?": user.AktifMi,
             "Silinme Tarihi": user.SilinmeTarihi,
             "Güncelleme Tarihi": user.GuncellemeTarihi,
             "Son Aktif Tarihi": user.SonAktifTarih,
+            "Düzenle": `<button class = "btn btn-link edit-button" data-id=${user.Id} data-target="#edit_modal">Düzenle</button>`,
         });
     });
 
     const gridOptions = {
         rowData: rowData,
         columnDefs: [
+            { field: "Id", hide:true },
             { field: "İsim", },
             { field: "Soyisim" },
             { field: "Kullanıcı Adı" },
@@ -117,6 +175,13 @@
             { field: "Silinme Tarihi" },
             { field: "Güncelleme Tarihi" },
             { field: "Son Aktif Tarihi" },
+            {
+                field: "Düzenle",
+                cellRenderer: function (params) {
+                    return `<button class = "btn btn-link edit-button" data-id=${params.data['Id']} data-target="#edit_modal">Düzenle</button>`
+                },
+                flex: 1
+            },
         ],
         defaultColDef: {
             filter: "agTextColumnFilter",
@@ -135,6 +200,40 @@
 
     const gridDiv = document.querySelector("#myGrid");
     gridApi = agGrid.createGrid(gridDiv, gridOptions);
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const editButtons = document.querySelectorAll('.edit-button');
+
+        editButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const userId = this.getAttribute('data-id');
+                if (userId) {
+                    fetch(`/GetUserInfo/${userId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(user => {
+                            console.log(user);
+                            // Modal içeriğini güncelle
+                            document.getElementById('kullaniciAdi').value = user.kullaniciAdi;
+                            document.getElementById('isim').value = user.isim;
+                            document.getElementById('soyisim').value = user.soyisim;
+                            document.getElementById('email').value = user.email;
+                            $('#edit_modal').modal('show')
+                        })
+                        .catch(error => {
+                            console.error('Error:', error.message);
+                        });
+                } else {
+                    console.error('User ID not found');
+                }
+            });
+        });
+    });
+
+
 </script>
-
-
