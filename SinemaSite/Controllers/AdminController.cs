@@ -2,6 +2,7 @@
 using SinemaSite.Models;
 using Newtonsoft.Json;
 using MySqlX.XDevAPI;
+using Microsoft.EntityFrameworkCore;
 
 namespace SinemaSite.Controllers
 {
@@ -34,6 +35,51 @@ namespace SinemaSite.Controllers
             return View();
         }
 
+        [HttpPost]
+        [SendUserInfo]
+        [AdminOnly]
+        public IActionResult Settings(AdminUserEditViewModel kullanici)
+        {
+            var users = _db.Kullanicis.ToList();
+            ViewBag.Users = JsonConvert.SerializeObject(users);
+            var user = _db.Kullanicis.Where(x => x.Id == kullanici.Id).FirstOrDefault();
+            if (user is not null)
+            {
+                try
+                {
+                    user.KullaniciAdi = kullanici.KullaniciAdi ?? user.KullaniciAdi;
+                    user.Isim = kullanici.Isim ?? user.Isim;
+                    user.Soyisim = kullanici.Soyisim ?? user.Soyisim;
+                    user.Email = kullanici.Email ?? user.Email;
+                    user.KullaniciTipi = kullanici.KullaniciTipi ?? user.KullaniciTipi;
+                    user.AktifMi = kullanici.AktifMi ?? user.AktifMi;
+                    user.GuncellemeTarihi = DateTime.Now;
+
+                    _db.SaveChanges();
+
+                    users = _db.Kullanicis.ToList();
+                    ViewBag.Users = JsonConvert.SerializeObject(users);
+                    var userJson = HttpContext.Session.GetString("user");
+                    var userdata = JsonConvert.DeserializeObject<Kullanici>(userJson);
+                    var currentUser = _db.Kullanicis.Where(x => x.KullaniciAdi == userdata.KullaniciAdi).FirstOrDefault();
+                    if (currentUser.Id == user.Id)
+                    {
+                        HttpContext.Session.Clear();
+                        userJson = JsonConvert.SerializeObject(user);
+                        HttpContext.Session.SetString("user", userJson);
+                    }
+                    return View(user);
+                }
+                catch
+                {
+                    ViewBag.Error = "Lütfen kullanılmayan bir mail veya kullanıcı adı giriniz.";
+                    return View();
+                }
+            }
+            return View();
+
+        }
+
         [SendUserInfo]
         [AdminOnly]
         public IActionResult AddSinema()
@@ -45,7 +91,7 @@ namespace SinemaSite.Controllers
         [HttpPost]
         public IActionResult AddSinema(SinemaAddingModel sinema)
         {
-            if (ModelState.IsValid ) 
+            if (ModelState.IsValid)
             {
                 var existingSinema = _db.Sinemas.Where(x => x.Isim == sinema.SinemaAdi || x.Adres == sinema.SinemaAdresi).FirstOrDefault();
                 if (existingSinema == null)
@@ -85,11 +131,12 @@ namespace SinemaSite.Controllers
             ViewBag.Sinemalar = sinemalar;
             if (ModelState.IsValid)
             {
-                var existingSalon = _db.Salons.Where(x => x.SinemaId == salon.SinemaId && x.SalonTipi == salon.SalonTipi && x.SalonNumarasi == salon.SalonNumarasi && x.ToplamKoltuk == salon.ToplamKoltuk).FirstOrDefault();
+                var existingSalon = _db.Salons.Where(x => x.SinemaId == salon.SinemaId && x.SalonTipi == salon.SalonTipi && x.SalonNumarasi == salon.SalonNumarasi && x.Satir == salon.Satir && x.Sutun == salon.Sutun).FirstOrDefault();
                 if (existingSalon == null)
                 {
                     Salon yeniSalon = new Salon();
-                    yeniSalon.ToplamKoltuk = salon.ToplamKoltuk;
+                    yeniSalon.Satir = salon.Satir;
+                    yeniSalon.Sutun = salon.Sutun;
                     yeniSalon.SinemaId = salon.SinemaId;
                     yeniSalon.SalonNumarasi = salon.SalonNumarasi;
                     yeniSalon.SalonTipi = salon.SalonTipi;
@@ -123,7 +170,8 @@ namespace SinemaSite.Controllers
                     Salons = s.Salons.Select(sa => new
                     {
                         sa.Id,
-                        sa.ToplamKoltuk,
+                        sa.Satir,
+                        sa.Sutun,
                         sa.SalonNumarasi,
                         sa.SalonTipi,
                         sa.OlusturulmaTarihi,
@@ -136,6 +184,83 @@ namespace SinemaSite.Controllers
             return View();
         }
 
+        [HttpPost]
+        [SendUserInfo]
+        [AdminOnly]
+        public IActionResult Salons(SalonEditModel salon)
+        {
+            var sinemalar = _db.Sinemas
+                .Select(s => new
+                {
+                    s.Id,
+                    s.Isim,
+                    s.Adres,
+                    s.OlusturulmaTarihi,
+                    s.SilinmeTarihi,
+                    s.GuncellemeTarihi,
+                    Salons = s.Salons.Select(sa => new
+                    {
+                        sa.Id,
+                        sa.Satir,
+                        sa.Sutun,
+                        sa.SalonNumarasi,
+                        sa.SalonTipi,
+                        sa.OlusturulmaTarihi,
+                        sa.SilinmeTarihi,
+                        sa.GuncellemeTarihi,
+                    }).ToList()
+                })
+                .ToList();
+            ViewBag.Sinemalar = JsonConvert.SerializeObject(sinemalar);
+            var sinema = _db.Sinemas
+                    .Where(s => s.Salons.Any(sa => sa.Id == salon.SalonId)).FirstOrDefault(); // Sinema içerisinde verilen salon id'si var mı kontrol et
+                    
+            if (sinema is not null)
+            {
+                try
+                {
+                    sinema.Isim = salon.SinemaAdi ?? sinema.Isim;
+                    sinema.Adres = salon.SinemaAdres ?? sinema.Adres;
+                    var düzenlenenSalon = _db.Salons.Where(sa => sa.Id == salon.SalonId).FirstOrDefault();
+                    düzenlenenSalon.SalonNumarasi = salon.SalonNumarasi ?? düzenlenenSalon.SalonNumarasi;
+                    düzenlenenSalon.Satir = salon.Satir ?? düzenlenenSalon.Satir;
+                    düzenlenenSalon.Sutun = salon.Sutun ?? düzenlenenSalon.Sutun;
+                    _db.SaveChanges();
+                    sinemalar = _db.Sinemas
+                        .Select(s => new
+                        {
+                            s.Id,
+                            s.Isim,
+                            s.Adres,
+                            s.OlusturulmaTarihi,
+                            s.SilinmeTarihi,
+                            s.GuncellemeTarihi,
+                            Salons = s.Salons.Select(sa => new
+                            {
+                                sa.Id,
+                                sa.Satir,
+                                sa.Sutun,
+                                sa.SalonNumarasi,
+                                sa.SalonTipi,
+                                sa.OlusturulmaTarihi,
+                                sa.SilinmeTarihi,
+                                sa.GuncellemeTarihi,
+                            }).ToList()
+                        })
+                        .ToList();
+                    ViewBag.Sinemalar = JsonConvert.SerializeObject(sinemalar);
+                    return View();
+                }
+                catch
+                {
+                    ViewBag.Error = "Bir hata oluştu.";
+                    return View();
+                }
+            }
+            return View();
+
+        }
+
         [HttpGet("GetUserInfo/{id}")]
         public IActionResult GetUserInfo(int id)
         {
@@ -145,6 +270,77 @@ namespace SinemaSite.Controllers
                 return NotFound();
             }
             return Json(user);
+        }
+
+        [HttpGet("GetSinemaInfo/{id}")]
+        public IActionResult GetSinemaInfo(int id)
+        {
+            var sinema = _db.Sinemas
+                    .Where(s => s.Salons.Any(sa => sa.Id == id)) // Sinema içerisinde verilen salon id'si var mı kontrol et
+                    .Select(s => new
+                    {
+                        s.Id,
+                        s.Isim,
+                        s.Adres,
+                        s.OlusturulmaTarihi,
+                        s.SilinmeTarihi,
+                        s.GuncellemeTarihi,
+                        // Yalnızca eşleşen salonu seç
+                        Salons = s.Salons
+                            .Where(sa => sa.Id == id)
+                            .Select(sa => new
+                            {
+                                sa.Id,
+                                sa.Satir,
+                                sa.Sutun,
+                                sa.SalonNumarasi,
+                                sa.SalonTipi,
+                                sa.OlusturulmaTarihi,
+                                sa.SilinmeTarihi,
+                                sa.GuncellemeTarihi,
+                            })
+                            .ToList()
+                    })
+                    .FirstOrDefault();
+            if (sinema == null)
+            {
+                return NotFound();
+            }
+            return Json(sinema);
+        }
+
+        [AdminOnly]
+        [SendUserInfo]
+        [HttpPost]
+        public IActionResult DeleteUser(AdminUserEditViewModel kullanici)
+        {
+            var user = _db.Kullanicis.Where(u => u.Id == kullanici.Id).FirstOrDefault();
+            user.SilinmeTarihi = DateTime.Now;
+            user.AktifMi = false;
+            _db.SaveChanges();
+            var userJson = HttpContext.Session.GetString("user");
+            var userdata = JsonConvert.DeserializeObject<Kullanici>(userJson);
+            var currentUser = _db.Kullanicis.Where(x => x.KullaniciAdi == userdata.KullaniciAdi).FirstOrDefault();
+            if (currentUser.Id == user.Id)
+            {
+                HttpContext.Session.Clear();
+                userJson = JsonConvert.SerializeObject(user);
+                HttpContext.Session.SetString("user", userJson);
+            }
+
+            return RedirectToAction("Settings", "Admin");
+        }
+
+        [AdminOnly]
+        [SendUserInfo]
+        [HttpPost]
+        public IActionResult DeleteSalon(SalonEditModel salon)
+        {
+            var silinecekSalon = _db.Salons.Where(sa => sa.Id == salon.SalonId ).FirstOrDefault();
+            silinecekSalon.SilinmeTarihi = DateTime.Now;
+            _db.SaveChanges();
+
+            return RedirectToAction("Salons", "Admin");
         }
     }
 }

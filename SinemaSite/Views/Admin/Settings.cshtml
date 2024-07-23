@@ -43,12 +43,12 @@
                                                 <h3 class="card-title">Kullanıcılar</h3>
                                             </div>
                                             <div id="myGrid" style="height: 600px" class="ag-theme-quartz"></div>
-                                                <div class="modal fade" id="edit_modal">
+                                            <div class="modal fade" data-backdrop="false" id="edit_modal">
                                                     <div class="modal-dialog modal-lg">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h4 class="modal-title">Kullanıcıyı Düzenle</h4>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                            <button type="button" data-backdrop="false" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                                     <span aria-hidden="true">&times;</span>
                                                                 </button>
                                                             </div>
@@ -56,6 +56,7 @@
                                                                 <form method="post" asp-action="Settings">
                                                                     <div class="modal-body">
                                                                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                                        <input hidden asp-for="Id" type="text" id="UserId" class="form-control" placeholder="">
                                                                         <div class="form-group row">
                                                                             <label class="col-sm-2 col-form-label">Kullanıcı Adı:</label>
                                                                             <div class="col-sm-10">
@@ -80,14 +81,34 @@
                                                                                 <input asp-for="Email" type="email" id="email" class="form-control" placeholder="">
                                                                             </div>
                                                                         </div>
-                                                                        <hr>
+                                                                        <div class="form-group row">
+                                                                            <label class="col-sm-2 col-form-label">Kullanıcı Türü:</label>
+                                                                            <select asp-for="KullaniciTipi" id="userTypeSelect" class="form-select" aria-label="Default select example">
+                                                                                <option value=0>Müşteri</option>
+                                                                                <option value=1>Personel</option>
+                                                                                <option value=2>Admin</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group row">
+                                                                            <label class="col-sm-2 col-form-label">Aktif Mi?:</label>
+                                                                            <div class="col-sm-2">
+                                                                            <input asp-for="AktifMi" type="checkbox" id="AktifMi" class="form-check-input" placeholder="">
+                                                                            </div>
+                                                                        </div>
 
                                                                     </div>
                                                                     <div class="modal-footer justify-content-between">
-                                                                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-outline-light">Kapat</button>
-                                                                        <button type="submit" class="btn btn-outline-light">Düzenlemeyi Kaydet</button>
-                                                                    </div>
+                                                                        <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-outline-light">Kapat</button>
+                                                                        <button type="submit" class="btn btn-primary">Düzenlemeyi Kaydet</button>
                                                                 </form>
+                                                                    <form method="post" asp-action="DeleteUser">
+                                                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                                        <input hidden asp-for="Id" type="text" id="DeleteUserId" class="form-control" placeholder="">
+                                                                            <button type="submit" class="btn btn-danger">
+                                                                                Hesabı Sil
+                                                                            </button>
+                                                                    </form>
+                                                                    </div>
                                                             </div>
                                                         </div>
                                                         <!-- /.modal-content -->
@@ -122,7 +143,6 @@
     </section>
 </div>
 <script>
-
     let gridApi;
     var users = @Html.Raw(ViewBag.Users);
     var rowData = [];
@@ -219,10 +239,16 @@
                         .then(user => {
                             console.log(user);
                             // Modal içeriğini güncelle
-                            document.getElementById('kullaniciAdi').value = user.kullaniciAdi;
-                            document.getElementById('isim').value = user.isim;
-                            document.getElementById('soyisim').value = user.soyisim;
-                            document.getElementById('email').value = user.email;
+                            document.getElementById('UserId').value = user.id;
+                            document.getElementById('DeleteUserId').value = user.id;
+                            document.getElementById('kullaniciAdi').placeholder = user.kullaniciAdi;
+                            document.getElementById('isim').placeholder = user.isim;
+                            document.getElementById('soyisim').placeholder = user.soyisim;
+                            document.getElementById('email').placeholder = user.email;
+                            const selectElement = document.getElementById('userTypeSelect');
+                            selectElement.value = user.kullaniciTipi;
+                            const checkbox = document.getElementById('AktifMi');
+                            checkbox.checked = user.aktifMi;
                             $('#edit_modal').modal('show')
                         })
                         .catch(error => {

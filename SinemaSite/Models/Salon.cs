@@ -8,7 +8,9 @@ public partial class Salon
 {
     public long Id { get; set; }
 
-    public int? ToplamKoltuk { get; set; }
+    public int? Sutun { get; set; }
+
+    public int? Satir { get; set; }
 
     public int? SalonNumarasi { get; set; }
 
@@ -24,6 +26,5 @@ public partial class Salon
 
     public virtual ICollection<Gosterim> Gosterims { get; set; } = new List<Gosterim>();
 
-    [JsonIgnore]
     public virtual Sinema? Sinema { get; set; }
 }

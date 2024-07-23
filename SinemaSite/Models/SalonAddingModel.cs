@@ -9,7 +9,10 @@ namespace SinemaSite.Models
         public int SalonNumarasi { get; set; }
 
         [Required]
-        public int ToplamKoltuk { get; set; }
+        public int? Sutun { get; set; }
+
+        [Required]
+        public int? Satir { get; set; }
 
         [Required]
         public int SalonTipi { get; set; }

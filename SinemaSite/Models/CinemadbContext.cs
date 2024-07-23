@@ -164,7 +164,8 @@ public partial class CinemadbContext : DbContext
                 .HasColumnType("timestamp")
                 .HasColumnName("silinme_tarihi");
             entity.Property(e => e.SinemaId).HasColumnName("sinema_id");
-            entity.Property(e => e.ToplamKoltuk).HasColumnName("toplam_koltuk");
+            entity.Property(e => e.Satir).HasColumnName("satir");
+            entity.Property(e => e.Sutun).HasColumnName("sutun");
 
             entity.HasOne(d => d.Sinema).WithMany(p => p.Salons)
                 .HasForeignKey(d => d.SinemaId)
@@ -219,7 +220,7 @@ public partial class CinemadbContext : DbContext
                 .HasColumnType("timestamp")
                 .HasColumnName("olusturulma_tarihi");
             entity.Property(e => e.SatinAlimTarihi).HasColumnName("satin_alim_tarihi");
-            entity.Property(e => e.Satır).HasColumnName("satır");
+            entity.Property(e => e.Satir).HasColumnName("satir");
             entity.Property(e => e.SilinmeTarihi)
                 .HasColumnType("timestamp")
                 .HasColumnName("silinme_tarihi");

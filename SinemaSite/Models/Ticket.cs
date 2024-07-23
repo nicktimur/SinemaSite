@@ -11,7 +11,7 @@ public partial class Ticket
 
     public int? Sutun { get; set; }
 
-    public int? Satır { get; set; }
+    public int? Satir { get; set; }
 
     public long? MusteriId { get; set; }
 
