@@ -102,6 +102,24 @@
                                                 </div>
                                                 <div class="col-lg-auto">
                                                     <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Film Durumu:</label>
+                                                        <select asp-for="FilmDurumu" class="form-select form-select-lg mb-2" aria-label=".form-select-lg example">
+                                                            <option value="0">Vizyonda Değil</option>
+                                                            <option value="1">Vizyonda</option>
+                                                            <option value="2">Vizyona Girecek</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-auto">
+                                                    <div class="form-group row">
+                                                        <label for="sunumTarihi" class="col-sm-2 col-form-label">Vizyon Tarihi:</label>
+                                                        <div class="col-sm-10">
+                                                            <input asp-for="VizyonTarihi" type="date" class="form-control" id="vizyonTarihi" aria-describedby="dateHelp" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-auto">
+                                                    <div class="form-group row">
                                                         <label class="col-md-2 col-form-label">Film Posteri:</label>
                                                         <div class="col-md-10">
                                                             <input asp-for="Resim" type="file" id="poster" class="form-control" accept="image/*" required>

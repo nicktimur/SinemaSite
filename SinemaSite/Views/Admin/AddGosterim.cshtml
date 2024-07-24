@@ -1,0 +1,184 @@
+﻿@model SinemaSite.Models.GosterimAddingModel
+@{
+    Layout = "_LayoutAdmin";
+    ViewBag.Title = "Gösterim Ekle";
+    var user = Context.Items["CurrentUser"] as Kullanici;
+    var sinemalar = ViewBag.Sinemalar as IEnumerable<SinemaSite.Models.Sinema>;
+    var filmler  = ViewBag.Filmler as IEnumerable<SinemaSite.Models.Film>;
+};
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Profil</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header p-2">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a class="nav-link active" href="#add_gosterim" data-toggle="tab">Gösterim Ekle</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="active tab-pane" id="add_gosterim">
+                                    <div class="col-md-15">
+                                        <div class="card">
+                                            <!-- /.card-body -->
+                                            <form method="post" asp-action="AddGosterim">
+                                                <br />
+                                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                @if (ViewBag.Error != null)
+                                                {
+                                                    <div id="error-message" value="@ViewBag.Error"></div>
+                                                    <div class="form-group" style="color: red;">@ViewBag.Error</div>
+                                                }
+                                                @if (ViewBag.Success != null)
+                                                {
+                                                    <div id="success-message" value="@ViewBag.Success"></div>
+                                                    <ul>
+                                                        <div class="form-group" style="color: green;"> @ViewBag.Success</div>
+                                                    </ul>
+                                                }
+                                                <div class="col-lg-auto">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-2 col-form-label">Sinema Seçiniz:</label>
+                                                        <select asp-for="SinemaId" id="sinema_select" class="form-select form-select-lg mb-2" aria-label=".form-select-lg example">
+                                                            @if (sinemalar is not null)
+                                                            {
+                                                                @foreach (var sinema in sinemalar)
+                                                                {
+                                                                    <option value="@sinema.Id">@sinema.Isim</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-auto">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-2 col-form-label">Salon Seçiniz:</label>
+                                                        <select asp-for="SalonId" id="salon_select" class="form-select form-select-lg mb-2" aria-label=".form-select-lg example">
+                                                            
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-auto">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-2 col-form-label">Eklenecek Film:</label>
+                                                        <select asp-for="FilmId" id="film_select" class="form-select form-select-lg mb-2" aria-label=".form-select-lg example">
+                                                        @if (filmler is not null)
+                                                        {
+                                                            @foreach (var film in filmler)
+                                                            {
+                                                                    <option value="@film.Id">@film.Isim</option>
+                                                            }
+                                                        };
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                 <div class="col-lg-auto">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Bilet Ucreti:</label>
+                                                        <div class="col-md-10">
+                                                            <input asp-for="Ucret" type="number" id="ucret" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-auto">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-2 col-form-label">Sunum Tarihi:</label>
+                                                        <div class="col-sm-10">
+                                                            <input asp-for="SunumTarihi" type="date" class="form-control" id="sunumtarihi" aria-describedby="timeHelp" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-auto">
+                                                    <div class="form-group row">
+                                                        <label for="sunumSaati" class="col-sm-2 col-form-label">Sunum Saati:</label>
+                                                        <div class="col-sm-10">
+                                                            <input asp-for="SunumSaati" type="time" class="form-control" id="sunumSaati" aria-describedby="timeHelp" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-auto">
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-10">
+                                                            <button type="submit" class="btn btn-success">Gösterim Ekle</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+
+                                </div>
+                                <!-- /.tab-pane -->
+                            </div>
+                            <!-- /.tab-content -->
+                        </div><!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sinemaSelect = document.getElementById("sinema_select");
+        const salonSelect = document.getElementById("salon_select");
+
+        if (!sinemaSelect || !salonSelect) {
+            console.error('Sinema veya salon select elementi bulunamadı.');
+            return;
+        }
+
+        // Sinema select ilk değer yüklendiğinde salonları yükleyin
+        const initialSinemaId = sinemaSelect.value;
+        if (initialSinemaId) {
+            loadSalonlar(initialSinemaId);
+        }
+
+        sinemaSelect.addEventListener('change', function () {
+            const sinemaId = this.value;
+            loadSalonlar(sinemaId);
+        });
+
+        function loadSalonlar(sinemaId) {
+            if (sinemaId) {
+                fetch(`/GetSalonlar/${sinemaId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        salonSelect.innerHTML = '<option value="">Salon Seçiniz</option>';
+                        data.forEach(salon => {
+                            const option = document.createElement('option');
+                            option.value = salon.id;
+                            option.textContent = `${salon.salonNumarasi}. Salon`;
+                            salonSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Salonlar alınırken hata oluştu:', error));
+            } else {
+                salonSelect.innerHTML = '<option value="">Salon Seçiniz</option>';
+            }
+        }
+    });
+
+</script>

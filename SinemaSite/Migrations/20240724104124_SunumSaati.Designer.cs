@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SinemaSite.Models;
 
@@ -11,9 +12,11 @@ using SinemaSite.Models;
 namespace SinemaSite.Migrations
 {
     [DbContext(typeof(CinemadbContext))]
-    partial class CinemadbContextModelSnapshot : ModelSnapshot
+    [Migration("20240724104124_SunumSaati")]
+    partial class SunumSaati
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,10 +35,6 @@ namespace SinemaSite.Migrations
                         .HasColumnName("id");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<int>("FilmDurumu")
-                        .HasColumnType("int")
-                        .HasColumnName("film_durumu");
 
                     b.Property<DateTime?>("GuncellemeTarihi")
                         .ValueGeneratedOnAddOrUpdate()
@@ -72,10 +71,6 @@ namespace SinemaSite.Migrations
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("Turler");
-
-                    b.Property<DateOnly>("VizyonTarihi")
-                        .HasColumnType("date")
-                        .HasColumnName("vizyon_tarihi");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");

@@ -44,6 +44,10 @@ public partial class CinemadbContext : DbContext
             entity.ToTable("film");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.FilmDurumu).HasColumnName("film_durumu");
+            entity.Property(e => e.VizyonTarihi)
+                .HasColumnName("vizyon_tarihi")
+                .HasColumnType("date");
             entity.Property(e => e.GuncellemeTarihi)
                 .ValueGeneratedOnAddOrUpdate()
                 .HasColumnType("timestamp")
@@ -88,8 +92,11 @@ public partial class CinemadbContext : DbContext
                 .HasColumnType("timestamp")
                 .HasColumnName("silinme_tarihi");
             entity.Property(e => e.SunumTarihi)
-                .HasColumnType("datetime")
+                .HasColumnType("date")
                 .HasColumnName("sunum_tarihi");
+            entity.Property(e => e.SunumSaati)
+                .HasColumnType("time")
+                .HasColumnName("sunum_saati");
 
             entity.HasOne(d => d.Film).WithMany(p => p.Gosterims)
                 .HasForeignKey(d => d.FilmId)

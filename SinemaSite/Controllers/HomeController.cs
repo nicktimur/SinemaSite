@@ -36,8 +36,10 @@ public class HomeController : Controller
     [SendUserInfo]
     public IActionResult Filmler()
     {
-        var films = _db.Films.ToList();
-        ViewBag.Films = films;
+        var vizyonda = _db.Films.Where(x => x.FilmDurumu == 1 ).ToList();
+        ViewBag.Vizyonda = vizyonda;
+        var gelecek = _db.Films.Where(x => x.FilmDurumu == 2).ToList();
+        ViewBag.Gelecek = gelecek;
 
         return View();
     }

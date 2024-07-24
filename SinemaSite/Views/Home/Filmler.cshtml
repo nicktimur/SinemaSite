@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Filmler";
-    var films = ViewBag.Films as List<SinemaSite.Models.Film>;
+    var vizyonda = ViewBag.Vizyonda as List<SinemaSite.Models.Film>;
+    var gelecek = ViewBag.Gelecek as List<SinemaSite.Models.Film>;
 }
 
 <!-- Content Wrapper. Contains page content -->
@@ -19,41 +20,105 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <!-- Film Grid -->
-            <div class="film-grid">
-                @if (films != null && films.Count > 0)
-                {
-                    foreach (var film in films)
-                    {
-                        <div class="film-card">
-                            <div class="film-poster">
-                                @if (film.ResimYolu != null && !string.IsNullOrWhiteSpace(film.ResimYolu))
-                                {
-                                    <img src="@film.ResimYolu" alt="@film.Isim" />
-                                }
-                                else
-                                {
-                                    <img src="~/img/movies/default.jpg" alt="@film.Isim" />
-                                }
+                    <div class="row">
+                        <!-- /.col -->
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header p-2">
+                                    <ul class="nav nav-pills">
+                                        <li class="nav-item"><a class="nav-link active" href="#vizyonda" data-toggle="tab">Vizyondaki Filmler</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="#yakinda" data-toggle="tab">Yakında Gelecek</a></li>
+                                    </ul>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <div class="tab-content">
+                                        <div class="active tab-pane" id="vizyonda">
+                                            <div class="film-grid">
+                                                @if (vizyonda != null && vizyonda.Count > 0)
+                                                {
+                                                    foreach (var film in vizyonda)
+                                                    {
+                                                        <div class="film-card">
+                                                            <div class="film-poster">
+                                                                @if (film.ResimYolu != null && !string.IsNullOrWhiteSpace(film.ResimYolu))
+                                                                {
+                                                                    <img src="@film.ResimYolu" alt="@film.Isim" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <img src="~/img/movies/default.jpg" alt="@film.Isim" />
+                                                                }
+                                                            </div>
+                                                            <div class="film-info">
+                                                                <h5>@film.Isim</h5>
+                                                                <p>
+                                                                    @foreach (var Tur in film.Turler)
+                                                                    {
+                                                                        <a>@Tur,</a>
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <p>Kayıtlı film bulunmamaktadır.</p>
+                                                }
+                                            </div>
+                                            <!-- /.film-grid -->
+                                        </div>
+                                        <!-- /.tab-pane -->
+
+                                        <div class="tab-pane" id="yakinda">
+                                    <div class="film-grid">
+                                        @if (gelecek != null && gelecek.Count > 0)
+                                        {
+                                            foreach (var film in gelecek)
+                                            {
+                                                <div class="film-card">
+                                                    <div class="film-poster">
+                                                        @if (film.ResimYolu != null && !string.IsNullOrWhiteSpace(film.ResimYolu))
+                                                        {
+                                                            <img src="@film.ResimYolu" alt="@film.Isim" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="~/img/movies/default.jpg" alt="@film.Isim" />
+                                                        }
+                                                    </div>
+                                                    <div class="film-info">
+                                                        <h5>@film.Isim</h5>
+                                                        <p>
+                                                            @foreach (var Tur in film.Turler)
+                                                            {
+                                                                <a>@Tur,</a>
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <p>Kayıtlı film bulunmamaktadır.</p>
+                                        }
+                                    </div>
+                                    <!-- /.film-grid -->
+                                        </div>
+                                        <!-- /.tab-pane -->
+
+
+                                    </div>
+                                    <!-- /.tab-content -->
+                                </div><!-- /.card-body -->
                             </div>
-                            <div class="film-info">
-                                <h5>@film.Isim</h5>
-                                    <p>
-                                @foreach(var Tur in film.Turler)
-                                {
-                                        <a>@Tur,</a>
-                                }
-                                    </p>
-                            </div>
+                            <!-- /.card -->
                         </div>
-                    }
-                }
-                else
-                {
-                    <p>Kayıtlı film bulunmamaktadır.</p>
-                }
-            </div>
-            <!-- /.film-grid -->
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
         </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->

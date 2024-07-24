@@ -401,6 +401,8 @@ namespace SinemaSite.Controllers
                         Isim = film.Isim,
                         Sure = film.Sure,
                         Turler = film.Turler,
+                        FilmDurumu = film.FilmDurumu,
+                        VizyonTarihi = film.VizyonTarihi,
                         OlusturulmaTarihi = DateTime.Now,
                         ResimYolu = $"/img/movies/{fileName}" // Poster dosya yolu
                     };
@@ -415,6 +417,70 @@ namespace SinemaSite.Controllers
                 return View();
             }
             return View();
+        }
+
+        [SendUserInfo]
+        [AdminOnly]
+        public IActionResult AddGosterim()
+        {
+            var sinemalar = _db.Sinemas.ToList();
+            ViewBag.Sinemalar = sinemalar;
+            var filmler = _db.Films.Where(film => film.FilmDurumu == 1 ).ToList();
+            ViewBag.Filmler = filmler;
+            return View();
+        }
+
+        [SendUserInfo]
+        [AdminOnly]
+        [HttpPost]
+        public IActionResult AddGosterim(GosterimAddingModel gosterim)
+        {
+            var sinemalar = _db.Sinemas.ToList();
+            ViewBag.Sinemalar = sinemalar;
+            var filmler = _db.Films.Where(film => film.FilmDurumu == 1).ToList();
+            ViewBag.Filmler = filmler;
+            if (ModelState.IsValid)
+            {
+                var benzerGosterim = _db.Gosterims.Where(g => g.FilmId == gosterim.FilmId && g.SalonId == gosterim.SalonId && g.SunumTarihi == gosterim.SunumTarihi && g.SunumSaati == gosterim.SunumSaati).FirstOrDefault();
+                if(benzerGosterim is null)
+                {
+                    Gosterim yeniGosterim = new Gosterim
+                    {
+                        FilmId = gosterim.FilmId,
+                        Ucret = gosterim.Ucret,
+                        SunumTarihi = gosterim.SunumTarihi,
+                        SunumSaati = gosterim.SunumSaati,
+                        SalonId = gosterim.SalonId
+                    };
+
+                    // Veritabanına yeni filmi ekleyin
+                    _db.Gosterims.Add(yeniGosterim);
+                    _db.SaveChanges();
+
+                    ViewBag.Success = "Gösterim başarıyla eklendi.";
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Bu gösterim zaten eklenmiş");
+                }
+                    return View();
+            }
+            else
+            {
+                ModelState.AddModelError("", "Girilen bilgilerde bir hata var.");
+            }
+            return View();
+        }
+
+        [HttpGet("/GetSalonlar/{sinemaId}")]
+        public IActionResult GetSalonlar(int sinemaId)
+        {
+            var salonlar = _db.Salons.Where(sa => sa.Sinema.Id == sinemaId && sa.SilinmeTarihi == null);
+            if (salonlar == null)
+            {
+                return NotFound();
+            }
+            return Json(salonlar);
         }
     }
 }
