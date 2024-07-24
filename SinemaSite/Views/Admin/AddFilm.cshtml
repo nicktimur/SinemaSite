@@ -1,0 +1,136 @@
+﻿@model SinemaSite.Models.FilmAddingModel
+@{
+    Layout = "_LayoutAdmin";
+    ViewBag.Title = "Film Ekle";
+    var user = Context.Items["CurrentUser"] as Kullanici;
+};
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Profil</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header p-2">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a class="nav-link active" href="#add_film" data-toggle="tab">Film Ekle</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="active tab-pane" id="add_film">
+                                    <div class="col-md-15">
+                                        <div class="card">
+                                            <!-- /.card-body -->
+                                            <form method="post" asp-action="AddFilm" enctype="multipart/form-data">
+                                                <br />
+                                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                @if (ViewBag.Error != null)
+                                                {
+                                                    <div id="error-message" value="@ViewBag.Error"></div>
+                                                    <div class="form-group" style="color: red;">@ViewBag.Error</div>
+                                                }
+                                                @if (ViewBag.Success != null)
+                                                {
+                                                    <div id="success-message" value="@ViewBag.Success"></div>
+                                                    <ul>
+                                                        <div class="form-group" style="color: green;"> @ViewBag.Success</div>
+                                                    </ul>
+                                                }
+                                                <div class="col-lg-auto">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Film Adı:</label>
+                                                        <div class="col-md-10">
+                                                            <input asp-for="Isim" type="text" id="film_adi" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-auto">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Süre (Dakika):</label>
+                                                        <div class="col-md-10">
+                                                            <input asp-for="Sure" type="number" id="sure" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-auto">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Film Türü:</label>
+                                                        <div class="col-md-10">
+                                                            <select class="select2" multiple="multiple" data-placeholder="Select a State" style="width: 100%;" asp-for="Turler">
+                                                                <option value="Aile" selected>Aile</option>
+                                                                <option value="Aksiyon">Aksiyon</option>
+                                                                <option value="Animasyon">Animasyon</option>
+                                                                <option value="Belgesel">Belgesel</option>
+                                                                <option value="Biyografi">Biyografi</option>
+                                                                <option value="Dram">Dram</option>
+                                                                <option value="Fantastik">Fantastik</option>
+                                                                <option value="Film-Noir">Film-Noir</option>
+                                                                <option value="Game-Show">Game-Show</option>
+                                                                <option value="Gerilim">Gerilim</option>
+                                                                <option value="Gizem">Gizem</option>
+                                                                <option value="Komedi">Komedi</option>
+                                                                <option value="Korku">Korku</option>
+                                                                <option value="Macera">Macera</option>
+                                                                <option value="Müzik">Müzik</option>
+                                                                <option value="Polisiye">Polisiye</option>
+                                                                <option value="Reality">Reality</option>
+                                                                <option value="Reality-TV">Reality-TV</option>
+                                                                <option value="Romantik">Romantik</option>
+                                                                <option value="Savaş">Savaş</option>
+                                                                <option value="Science Fiction">Science Fiction</option>
+                                                                <option value="Short">Short</option>
+                                                                <option value="Spor">Spor</option>
+                                                                <option value="Suç">Suç</option>
+                                                                <option value="Tarih">Tarih</option>
+                                                                <option value="TV Movie">TV Movie</option>
+                                                                <option value="Western">Western</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-auto">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Film Posteri:</label>
+                                                        <div class="col-md-10">
+                                                            <input asp-for="Resim" type="file" id="poster" class="form-control" accept="image/*" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-auto">
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-10">
+                                                            <button type="submit" class="btn btn-success">Film Ekle</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+
+                                </div>
+                                <!-- /.tab-pane -->
+                            </div>
+                            <!-- /.tab-content -->
+                        </div><!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+</div>

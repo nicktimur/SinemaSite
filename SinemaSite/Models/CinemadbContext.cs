@@ -59,6 +59,8 @@ public partial class CinemadbContext : DbContext
                 .HasColumnType("timestamp")
                 .HasColumnName("silinme_tarihi");
             entity.Property(e => e.Sure).HasColumnName("sure");
+            entity.Property(e => e.Turler).HasColumnName("Turler");
+            entity.Property(e => e.ResimYolu).HasColumnName("resim_yolu");
         });
 
         modelBuilder.Entity<Gosterim>(entity =>

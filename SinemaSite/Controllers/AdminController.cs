@@ -367,5 +367,54 @@ namespace SinemaSite.Controllers
 
             return RedirectToAction("Salons", "Admin");
         }
+
+        [SendUserInfo]
+        [AdminOnly]
+        public IActionResult AddFilm()
+        {
+            return View();
+        }
+
+        [SendUserInfo]
+        [AdminOnly]
+        [HttpPost]
+        public IActionResult AddFilm(FilmAddingModel film)
+        {
+            if (ModelState.IsValid)
+            {
+                // Resim dosyası kontrolü
+                if (film.Resim != null && film.Resim.Length > 0)
+                {
+                    // Dosya adını ve yolunu belirleyin
+                    var fileName = $"{film.Isim.Replace(" ", "_")}_{Guid.NewGuid()}{Path.GetExtension(film.Resim.FileName)}";
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/movies", fileName);
+
+                    // Resim dosyasını kaydedin
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        film.Resim.CopyTo(stream);
+                    }
+
+                    // Yeni film nesnesi oluşturun
+                    Film yeniFilm = new Film
+                    {
+                        Isim = film.Isim,
+                        Sure = film.Sure,
+                        Turler = film.Turler,
+                        OlusturulmaTarihi = DateTime.Now,
+                        ResimYolu = $"/img/movies/{fileName}" // Poster dosya yolu
+                    };
+
+                    // Veritabanına yeni filmi ekleyin
+                    _db.Films.Add(yeniFilm);
+                    _db.SaveChanges();
+
+                    ViewBag.Success = "Film başarıyla eklendi.";
+                    return View(film);
+                }
+                return View();
+            }
+            return View();
+        }
     }
 }

@@ -11,7 +11,9 @@ public partial class Film
 
     public int? Sure { get; set; }
 
-    public string Tur {  get; set; }
+    public List<string> Turler { get; set; } = new List<string>();
+
+    public string ResimYolu { get; set; }
 
     public DateTime? OlusturulmaTarihi { get; set; }
 

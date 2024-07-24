@@ -1,0 +1,108 @@
+﻿@{
+    ViewData["Title"] = "Filmler";
+    var films = ViewBag.Films as List<SinemaSite.Models.Film>;
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Filmler</h1>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Film Grid -->
+            <div class="film-grid">
+                @if (films != null && films.Count > 0)
+                {
+                    foreach (var film in films)
+                    {
+                        <div class="film-card">
+                            <div class="film-poster">
+                                @if (film.ResimYolu != null && !string.IsNullOrWhiteSpace(film.ResimYolu))
+                                {
+                                    <img src="@film.ResimYolu" alt="@film.Isim" />
+                                }
+                                else
+                                {
+                                    <img src="~/img/movies/default.jpg" alt="@film.Isim" />
+                                }
+                            </div>
+                            <div class="film-info">
+                                <h5>@film.Isim</h5>
+                                    <p>
+                                @foreach(var Tur in film.Turler)
+                                {
+                                        <a>@Tur,</a>
+                                }
+                                    </p>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>Kayıtlı film bulunmamaktadır.</p>
+                }
+            </div>
+            <!-- /.film-grid -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<!-- CSS -->
+<style>
+    .film-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 20px;
+        justify-content: flex-start;
+    }
+
+    .film-card {
+        width: 200px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #fff;
+        transition: transform 0.2s, box-shadow 0.2s;
+        text-align: center;
+    }
+
+        .film-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+    .film-poster img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .film-info {
+        padding: 15px;
+    }
+
+        .film-info h5 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .film-info p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #777;
+        }
+</style>

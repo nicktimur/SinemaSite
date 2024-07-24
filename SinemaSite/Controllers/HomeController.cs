@@ -14,10 +14,12 @@ namespace SinemaSite.Controllers;
 public class HomeController : Controller
 {    
     private readonly ILogger<HomeController> _logger;
+    private readonly CinemadbContext _db;
 
-    public HomeController(ILogger<HomeController> logger, IConfiguration _configuration)
+    public HomeController(ILogger<HomeController> logger, IConfiguration _configuration , CinemadbContext db)
     {
         _logger = logger;
+        _db = db;
     }
 
     [SendUserInfo]
@@ -28,6 +30,15 @@ public class HomeController : Controller
 
     public IActionResult Privacy()
     {
+        return View();
+    }
+
+    [SendUserInfo]
+    public IActionResult Filmler()
+    {
+        var films = _db.Films.ToList();
+        ViewBag.Films = films;
+
         return View();
     }
 

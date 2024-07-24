@@ -41,6 +41,14 @@
                 @if(user is not null)
                 {
                     <li class="nav-item">
+                        <a asp-controller="Admin" asp-action="AddFilm" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>
+                                Film Ekle
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a asp-controller="Admin" asp-action="AddSalon" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>

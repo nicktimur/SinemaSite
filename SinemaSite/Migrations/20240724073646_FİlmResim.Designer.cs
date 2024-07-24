@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SinemaSite.Models;
 
@@ -11,9 +12,11 @@ using SinemaSite.Models;
 namespace SinemaSite.Migrations
 {
     [DbContext(typeof(CinemadbContext))]
-    partial class CinemadbContextModelSnapshot : ModelSnapshot
+    [Migration("20240724073646_FİlmResim")]
+    partial class FİlmResim
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,10 +67,9 @@ namespace SinemaSite.Migrations
                         .HasColumnType("int")
                         .HasColumnName("sure");
 
-                    b.Property<string>("Turler")
+                    b.Property<string>("Tur")
                         .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("Turler");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
