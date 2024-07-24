@@ -223,11 +223,11 @@
 
 
     document.addEventListener('DOMContentLoaded', function () {
-        const editButtons = document.querySelectorAll('.edit-button');
+        const gridContainer = document.querySelector('#myGrid');
 
-        editButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const userId = this.getAttribute('data-id');
+        gridContainer.addEventListener('click', function (event) {
+            if (event.target.classList.contains('edit-button')) {
+                const userId = event.target.getAttribute('data-id');
                 if (userId) {
                     fetch(`/GetUserInfo/${userId}`)
                         .then(response => {
@@ -237,8 +237,6 @@
                             return response.json();
                         })
                         .then(user => {
-                            console.log(user);
-                            // Modal içeriğini güncelle
                             document.getElementById('UserId').value = user.id;
                             document.getElementById('DeleteUserId').value = user.id;
                             document.getElementById('kullaniciAdi').placeholder = user.kullaniciAdi;
@@ -254,12 +252,14 @@
                         .catch(error => {
                             console.error('Error:', error.message);
                         });
-                } else {
+                } 
+                else {
                     console.error('User ID not found');
                 }
-            });
+            }
         });
     });
 
 
+   
 </script>

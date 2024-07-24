@@ -225,30 +225,55 @@ namespace SinemaSite.Controllers
                     düzenlenenSalon.SalonNumarasi = salon.SalonNumarasi ?? düzenlenenSalon.SalonNumarasi;
                     düzenlenenSalon.Satir = salon.Satir ?? düzenlenenSalon.Satir;
                     düzenlenenSalon.Sutun = salon.Sutun ?? düzenlenenSalon.Sutun;
-                    _db.SaveChanges();
-                    sinemalar = _db.Sinemas
-                        .Select(s => new
-                        {
-                            s.Id,
-                            s.Isim,
-                            s.Adres,
-                            s.OlusturulmaTarihi,
-                            s.SilinmeTarihi,
-                            s.GuncellemeTarihi,
-                            Salons = s.Salons.Select(sa => new
+                    var benzerSalon = _db.Salons
+                        .Where(sa => sa.SalonNumarasi == düzenlenenSalon.SalonNumarasi
+                                     && sa.Satir == düzenlenenSalon.Satir
+                                     && sa.Sutun == düzenlenenSalon.Sutun
+                                     && sa.Id != düzenlenenSalon.Id
+                                     && sa.SilinmeTarihi == null)
+                        .FirstOrDefault();
+
+                    var benzerSinema = _db.Sinemas
+                        .Where(s => s.Isim == sinema.Isim
+                                    && s.Adres == sinema.Adres
+                                    && s.Id != sinema.Id
+                                    && s.SilinmeTarihi == null)
+                        .FirstOrDefault();
+
+                    if(benzerSalon is not null || benzerSinema is not null)
+                    {
+                        ViewBag.Error = "Bu salon zaten mevcut. Düzenlemeler kaydedilmedi.";
+                    }
+                    else
+                    {
+                        _db.SaveChanges();
+                        sinemalar = _db.Sinemas
+                            .Select(s => new
                             {
-                                sa.Id,
-                                sa.Satir,
-                                sa.Sutun,
-                                sa.SalonNumarasi,
-                                sa.SalonTipi,
-                                sa.OlusturulmaTarihi,
-                                sa.SilinmeTarihi,
-                                sa.GuncellemeTarihi,
-                            }).ToList()
-                        })
-                        .ToList();
-                    ViewBag.Sinemalar = JsonConvert.SerializeObject(sinemalar);
+                                s.Id,
+                                s.Isim,
+                                s.Adres,
+                                s.OlusturulmaTarihi,
+                                s.SilinmeTarihi,
+                                s.GuncellemeTarihi,
+                                Salons = s.Salons.Select(sa => new
+                                {
+                                    sa.Id,
+                                    sa.Satir,
+                                    sa.Sutun,
+                                    sa.SalonNumarasi,
+                                    sa.SalonTipi,
+                                    sa.OlusturulmaTarihi,
+                                    sa.SilinmeTarihi,
+                                    sa.GuncellemeTarihi,
+                                }).ToList()
+                            })
+                            .ToList();
+                        ViewBag.Sinemalar = JsonConvert.SerializeObject(sinemalar);
+                    }
+
+
+
                     return View();
                 }
                 catch

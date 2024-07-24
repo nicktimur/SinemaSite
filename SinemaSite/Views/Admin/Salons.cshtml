@@ -41,12 +41,19 @@
                                             <div class="card-header">
                                                 <h3 class="card-title">Salonlar</h3>
                                             </div>
+                                            @if (ViewBag.Error != null)
+                                            {
+                                                <div class="col-lg-auto">
+                                                    <div id="error-message" value="@ViewBag.Error"></div>
+                                                    <div class="form-group" style="color: red;">@ViewBag.Error</div
+                                                </div>
+                                            }
                                             <div id="myGrid" style="height: 600px" class="ag-theme-quartz"></div>
                                             <div class="modal fade" data-backdrop="false" id="edit_modal">
                                                 <div class="modal-dialog modal-lg">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h4 class="modal-title">Salon Düzenle</h4>
+                                                            <h4 class="modal-title">Sinema ve Salon Düzenle</h4>
                                                             <button type="button" data-backdrop="false" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
@@ -54,7 +61,6 @@
                                                         <div class="modal-body">
                                                             <form method="post" asp-action="Salons">
                                                                 <div class="modal-body">
-                                                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                                                     <input hidden asp-for="SalonId" type="text" id="SalonId" class="form-control" placeholder="">
                                                                     <div class="form-group row">
                                                                         <label class="col-sm-2 col-form-label">Sinema Adı:</label>
@@ -68,6 +74,7 @@
                                                                             <input asp-for="SinemaAdres" type="text" id="SinemaAdres" class="form-control" placeholder="">
                                                                         </div>
                                                                     </div>
+                                                                    <div class="modal-footer justify-content-between"></div>
                                                                     <div class="form-group row">
                                                                         <label class="col-sm-2 col-form-label">Salon Numarası:</label>
                                                                         <div class="col-sm-10">
@@ -91,8 +98,14 @@
                                                                 <div class="modal-footer justify-content-between">
                                                                     <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-outline-light">Kapat</button>
                                                                     <button type="submit" class="btn btn-primary">Düzenlemeyi Kaydet</button>
-                                                                </div>
                                                             </form>
+                                                                    <form method="post" asp-action="DeleteSalon">
+                                                                        <input hidden asp-for="SalonId" type="text" id="DeleteSalonId" class="form-control" placeholder="">
+                                                                            <button type="submit" class="btn btn-danger">
+                                                                                Salonu Sil
+                                                                            </button>
+                                                                    </form>
+                                                                </div>
                                                         </div>
                                                     </div>
                                                     <!-- /.modal-content -->
@@ -218,11 +231,11 @@
     gridApi = agGrid.createGrid(gridDiv, gridOptions);
 
     document.addEventListener('DOMContentLoaded', function () {
-        const editButtons = document.querySelectorAll('.edit-button');
+        const gridContainer = document.querySelector('#myGrid');
 
-        editButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const salonId = this.getAttribute('data-id');
+        gridContainer.addEventListener('click', function (event) {
+            if (event.target.classList.contains('edit-button')) {
+                const salonId = event.target.getAttribute('data-id');
                 if (salonId) {
                     fetch(`/GetSinemaInfo/${salonId}`)
                         .then(response => {
@@ -232,16 +245,14 @@
                             return response.json();
                         })
                         .then(sinema => {
-                            console.log(sinema);
-                            // Modal içeriğini güncelle
-                            console.log(sinema)
                             document.getElementById('SalonId').value = sinema.salons[0].id;
+                            document.getElementById('DeleteSalonId').value = sinema.salons[0].id;
                             document.getElementById('SinemaAdi').placeholder = sinema.isim;
                             document.getElementById('SinemaAdres').placeholder = sinema.adres;
                             document.getElementById('SalonNumarasi').placeholder = sinema.salons[0].salonNumarasi;
                             document.getElementById('Satir').placeholder = sinema.salons[0].satir;
                             document.getElementById('Sutun').placeholder = sinema.salons[0].sutun;
-                            $('#edit_modal').modal('show')
+                            $('#edit_modal').modal('show');
                         })
                         .catch(error => {
                             console.error('Error:', error.message);
@@ -249,7 +260,7 @@
                 } else {
                     console.error('Salon ID not found');
                 }
-            });
+            }
         });
     });
 </script>
