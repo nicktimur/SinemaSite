@@ -15,7 +15,7 @@ public partial class Film
 
     public List<string> Turler { get; set; } = new List<string>();
 
-    public string ResimYolu { get; set; }
+    public string ResimYolu { get; set; } = "/img/movies/default.jpg";
 
     public DateOnly VizyonTarihi { get; set; }
 

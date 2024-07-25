@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using NuGet.Protocol;
 using SinemaSite.Models;
 
 
@@ -41,6 +42,63 @@ public class HomeController : Controller
         var gelecek = _db.Films.Where(x => x.FilmDurumu == 2).ToList();
         ViewBag.Gelecek = gelecek;
 
+        return View();
+    }
+
+    [SendUserInfo]
+    public IActionResult Detaylar(int id)
+    {
+        var film = _db.Films.Where(x => x.Id == id)
+                            .Select(s => new
+                            {
+                                s.Id,
+                                s.Isim,
+                                s.Sure,
+                                s.FilmDurumu,
+                                s.Turler,
+                                s.ResimYolu,
+                                Gosterims = s.Gosterims.Select(sa => new
+                                {
+                                    sa.Id,
+                                    sa.SalonId,
+                                    sa.FilmId,
+                                    sa.Ucret,
+                                    sa.SunumTarihi,
+                                    sa.SunumSaati,
+                                }).ToList()
+                            })
+                            .ToList();
+        var salonIds = film
+            .SelectMany(f => f.Gosterims)
+            .Select(g => g.SalonId)
+            .Distinct()
+            .ToList();
+
+        var salonlar = _db.Salons
+            .Where(s => salonIds.Contains(s.Id))
+            .Select(s => new
+            {
+                s.Id,
+                s.SinemaId
+            })
+            .ToList();
+
+        var sinemaIds = salonlar
+            .Select(s => s.SinemaId)
+            .Distinct()
+            .ToList();
+
+        var sinemalar = _db.Sinemas
+            .Where(s => sinemaIds.Contains(s.Id))
+            .ToList();
+
+        if (film == null)
+        {
+            return NotFound();
+        }
+        var firstFilm = film.FirstOrDefault();
+        ViewBag.Film = firstFilm;
+        ViewBag.Sinemalar = sinemalar;
         return View();
     }
 

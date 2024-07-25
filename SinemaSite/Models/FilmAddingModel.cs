@@ -17,7 +17,6 @@ namespace SinemaSite.Models
 
         public List<string> Turler { get; set; }
 
-        [Required(ErrorMessage = "Film posteri gereklidir.")]
         public IFormFile Resim { get; set; }
 
         public DateOnly VizyonTarihi { get; set; }

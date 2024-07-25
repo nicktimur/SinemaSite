@@ -382,11 +382,12 @@ namespace SinemaSite.Controllers
         {
             if (ModelState.IsValid)
             {
+                var fileName = "";
                 // Resim dosyası kontrolü
                 if (film.Resim != null && film.Resim.Length > 0)
                 {
                     // Dosya adını ve yolunu belirleyin
-                    var fileName = $"{film.Isim.Replace(" ", "_")}_{Guid.NewGuid()}{Path.GetExtension(film.Resim.FileName)}";
+                    fileName = $"{film.Isim.Replace(" ", "_")}_{Guid.NewGuid()}{Path.GetExtension(film.Resim.FileName)}";
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/movies", fileName);
 
                     // Resim dosyasını kaydedin
@@ -395,25 +396,30 @@ namespace SinemaSite.Controllers
                         film.Resim.CopyTo(stream);
                     }
 
-                    // Yeni film nesnesi oluşturun
-                    Film yeniFilm = new Film
-                    {
-                        Isim = film.Isim,
-                        Sure = film.Sure,
-                        Turler = film.Turler,
-                        FilmDurumu = film.FilmDurumu,
-                        VizyonTarihi = film.VizyonTarihi,
-                        OlusturulmaTarihi = DateTime.Now,
-                        ResimYolu = $"/img/movies/{fileName}" // Poster dosya yolu
-                    };
-
-                    // Veritabanına yeni filmi ekleyin
-                    _db.Films.Add(yeniFilm);
-                    _db.SaveChanges();
-
-                    ViewBag.Success = "Film başarıyla eklendi.";
-                    return View(film);
                 }
+                else
+                {
+                    fileName = "default.jpg";
+                }
+                
+                // Yeni film nesnesi oluşturun
+                Film yeniFilm = new Film
+                {
+                    Isim = film.Isim,
+                    Sure = film.Sure,
+                    Turler = film.Turler,
+                    FilmDurumu = film.FilmDurumu,
+                    VizyonTarihi = film.VizyonTarihi,
+                    OlusturulmaTarihi = DateTime.Now,
+                    ResimYolu = $"/img/movies/{fileName}" // Poster dosya yolu
+                };
+
+                // Veritabanına yeni filmi ekleyin
+                _db.Films.Add(yeniFilm);
+                _db.SaveChanges();
+
+                ViewBag.Success = "Film başarıyla eklendi.";
+                return View(film);
                 return View();
             }
             return View();
@@ -425,7 +431,7 @@ namespace SinemaSite.Controllers
         {
             var sinemalar = _db.Sinemas.ToList();
             ViewBag.Sinemalar = sinemalar;
-            var filmler = _db.Films.Where(film => film.FilmDurumu == 1 ).ToList();
+            var filmler = _db.Films.ToList();
             ViewBag.Filmler = filmler;
             return View();
         }

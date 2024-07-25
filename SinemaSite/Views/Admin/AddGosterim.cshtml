@@ -3,8 +3,14 @@
     Layout = "_LayoutAdmin";
     ViewBag.Title = "Gösterim Ekle";
     var user = Context.Items["CurrentUser"] as Kullanici;
-    var sinemalar = ViewBag.Sinemalar as IEnumerable<SinemaSite.Models.Sinema>;
-    var filmler  = ViewBag.Filmler as IEnumerable<SinemaSite.Models.Film>;
+    var sinemalar = new List<SinemaSite.Models.Sinema>();
+    var filmler = new List<SinemaSite.Models.Film>();
+    if(ViewBag.Filmler is not null)
+    {
+        filmler = ViewBag.Filmler as List<SinemaSite.Models.Film>;
+    }
+    if(ViewBag.Sinemalar is not null)
+
 };
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -76,13 +82,10 @@
                                                     <div class="form-group row">
                                                         <label class="col-sm-2 col-form-label">Eklenecek Film:</label>
                                                         <select asp-for="FilmId" id="film_select" class="form-select form-select-lg mb-2" aria-label=".form-select-lg example">
-                                                        @if (filmler is not null)
-                                                        {
                                                             @foreach (var film in filmler)
                                                             {
                                                                     <option value="@film.Id">@film.Isim</option>
                                                             }
-                                                        };
                                                         </select>
                                                     </div>
                                                 </div>

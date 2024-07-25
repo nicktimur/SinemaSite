@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["Title"] = "Detaylar";
+    var film = ViewBag.Film as dynamic;
+    var sinemalar = ViewBag.Sinemalar as List<SinemaSite.Models.Sinema>;
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Film Detayları</h1>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                @if (film != null)
+                {
+                    <div class="col-md-4">
+                        <div class="film-card">
+                            <img src="@film.ResimYolu" class="film-image" alt="@film.Isim">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <!-- Film Bilgileri -->
+                        <div class="film-details-card">
+                            <div class="film-details-body">
+                                <h5 class="film-title">@film.Isim</h5>
+                                <p class="film-info">
+                                    <strong>Türler:</strong>
+                                @foreach(var tur in film.Turler){
+                                    <a>@tur, </a>
+                                }
+                                </p>
+                                <p class="film-info">
+                                    <strong>Oynadığı sinemalar:</strong>
+                                @foreach(var sinema in sinemalar){
+                                    <a>@sinema.Isim, </a>
+                                }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p>Film bilgisi bulunamadı.</p>
+                }
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<style>
+    .film-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .film-image {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .film-details-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        background-color: #fff;
+    }
+
+    .film-details-body {
+        color: #333;
+    }
+
+    .film-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .film-info {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+        .film-info strong {
+            color: #555;
+        }
+
+    .content-wrapper {
+        padding: 20px;
+    }
+</style>
