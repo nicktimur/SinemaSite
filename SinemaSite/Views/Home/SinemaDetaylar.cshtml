@@ -140,7 +140,9 @@
                                                                                     }
                                                                                 </div>
                                                                             }
-                                                                            @{string notFound = canShow ? "" : "display:none;";}
+                                                                            @{
+                                                                                string notFound = canShow ? "" : "display:none;";
+                                                                            }
                                                                             <div class="d-flex align-items-center mb-2">
                                                                                 <span class="me-2" style="@notFound">Bu film için gösterim bulunmamakta.</span>
                                                                             </div>
