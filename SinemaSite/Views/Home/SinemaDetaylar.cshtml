@@ -1,0 +1,210 @@
+﻿@{
+    ViewData["Title"] = "Detaylar";
+    var filmler = ViewBag.Filmler as List<SinemaSite.Models.Film>;
+    var sinemalarJson = ViewBag.Sinemalar as string;
+    var sinema = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Sinema>>(sinemalarJson)[0];
+}
+@functions {
+    // Tarih hesaplama
+    public List<DateOnly> GetDatesForTabs()
+    {
+        var now = DateOnly.FromDateTime(DateTime.Now);
+
+        // Bu haftanın cumartesisi
+        var startOfWeek = now.AddDays(-(int)now.DayOfWeek + (int)DayOfWeek.Saturday);
+
+        // Geçmiş haftanın cuması (bir hafta önce)
+        var startOfPreviousWeek = startOfWeek.AddDays(-6);
+
+        // Bu tarihten itibaren bir hafta sürecek tarihler
+        var dates = new List<DateOnly>();
+        for (var date = startOfPreviousWeek; date <= startOfWeek; date = date.AddDays(1))
+        {
+            dates.Add(date);
+        }
+
+        return dates;
+    }
+
+    // Tarih kontrolü
+    public bool IsTabEnabled(DateOnly date)
+    {
+        return DateOnly.FromDateTime(DateTime.Now) <= date;
+    }
+}
+
+@{
+    var tabDates = GetDatesForTabs();
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">@sinema.Isim Gösterimleri</h1>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                @if (sinema != null)
+                {
+                    <div class="col-md-12">
+                        <!-- Film Bilgileri -->
+                        <div class="film-details-card">
+                            <div class="film-details-body">
+                                <h5 class="film-title">@sinema.Isim</h5>
+                                <p class="film-info">
+                                    <strong>Adresi:</strong>
+                                    @sinema.Adres
+                                </p>
+                                @foreach (var film in filmler)
+                                {
+                                    var id = film.Id;
+                                    var str = "film" + id;
+                                    <div class="film-card">
+                                        <div class="film-card-image">
+                                            <img src="@film.ResimYolu" alt="@film.Isim" />
+                                        </div>
+                                        <div class="film-card-content">
+                                            <h6 class="film-card-title">@film.Isim</h6>
+                                            <div class="film-card-empty-space">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="card">
+                                                            <div class="card-header p-2">
+                                                                <ul class="nav nav-pills">
+                                                                    @foreach (var date in tabDates)
+                                                                    {
+                                                                        var tabId = $"{str}-{date:yyyyMMdd}";
+                                                                        var isActive = date == DateOnly.FromDateTime(DateTime.Now);
+                                                                        var isEnabled = IsTabEnabled(date);
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link @(isActive ? "active" : "") @(isEnabled ? "" : "disabled")" href="#@tabId" data-toggle="tab">
+                                                                                @date
+                                                                            </a>
+                                                                        </li>
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div class="tab-content">
+                                                                    @foreach (var date in tabDates)
+                                                                    {
+                                                                        bool canShow = true; 
+                                                                        var tabId = $"{str}-{date:yyyyMMdd}";
+                                                                        <div class="tab-pane @(date == DateOnly.FromDateTime(DateTime.Now) ? "active" : "")" id="@tabId">
+                                                                            @foreach (var salon in sinema.Salons)
+                                                                            {
+                                                                                bool hasButtons = salon.Gosterims.Any(gosterim => gosterim.FilmId == film.Id && gosterim.SunumTarihi == date);
+                                                                                canShow = hasButtons;
+                                                                                string salonStyle = hasButtons ? "" : "display:none;";
+                                                                                string logoPath = salon.SalonTipi switch
+                                                                                {
+                                                                                    1 => "/img/icons/IMAX.png",
+                                                                                    2 => "/images/4DX.png",
+                                                                                    _ => ""
+                                                                                };
+
+                                                                                <div class="d-flex align-items-center mb-2">
+                                                                                    <span class="me-2" style="@salonStyle">Salon @salon.SalonNumarasi :</span>
+                                                                                    @if (!string.IsNullOrEmpty(logoPath))
+                                                                                    {
+                                                                                        <div class="" style="@salonStyle">
+                                                                                            <img src="@logoPath" alt="Salon Tipi Logosu"  class="icon" />
+                                                                                        </div>
+                                                                                    }
+                                                                                    @foreach (var gosterim in salon.Gosterims)
+                                                                                    {
+                                                                                        if (gosterim.FilmId == film.Id && gosterim.SunumTarihi == date)
+                                                                                        {
+                                                                                            var showTime = gosterim.SunumSaati;
+                                                                                            var isPast = DateTime.Now.TimeOfDay > showTime.ToTimeSpan(); // Geçmiş saati kontrol et
+                                                                                            var buttonClass = isPast ? "btn btn-secondary disabled" : "btn btn-primary";
+
+                                                                                            <div class="col-lg-auto">
+                                                                                                <a asp-controller="Home" asp-action="SatinAl" asp-route-id="@gosterim.Id" class="btn @buttonClass" role="button">
+                                                                                                    @showTime
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        }
+                                                                                    }
+                                                                                </div>
+                                                                            }
+                                                                            @{string notFound = canShow ? "display:none;" : "";}
+                                                                            <div class="d-flex align-items-center mb-2">
+                                                                                <span class="me-2" style="@notFound">Bu film için gösterim bulunmamakta.</span>
+                                                                            </div>
+                                                                            
+
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            </div><!-- /.card-body -->
+                                                        </div><!-- /.card -->
+                                                    </div><!-- /.col -->
+                                                </div><!-- /.row -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<style>
+    .film-card {
+        display: flex;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        overflow: hidden;
+    }
+
+    .film-card-image {
+        flex: 0 0 150px;
+        overflow: hidden;
+    }
+
+        .film-card-image img {
+            width: 100%;
+            height: auto;
+        }
+
+    .film-card-content {
+        padding: 10px;
+        flex: 1;
+    }
+
+    .film-card-title {
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .film-card-empty-space {
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    .icon-container {
+        width: calc(100% - 20px);
+        margin-top: 10px;
+    }
+
+    .icon {
+        margin: 0 5px;
+    }
+</style>

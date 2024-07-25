@@ -1,0 +1,128 @@
+﻿@{
+    ViewData["Title"] = "Sinemalar";
+    var sinemalarJson = ViewBag.Sinemalar as string;
+    var sinemalar = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Sinema>>(sinemalarJson);
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Sinemalar</h1>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- /.col -->
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="sinema-grid">
+                                @if (sinemalar != null)
+                                {
+                                    foreach (var sinema in sinemalar)
+                                    {
+                                        <div class="sinema-card">
+                                            <a asp-controller="Home" asp-action="SinemaDetaylar" asp-route-id="@sinema.Id" class="sinema-card-link">
+                                                <div class="sinema-info">
+                                                    <h5>@sinema.Isim</h5>
+                                                    <p>@sinema.Adres</p>
+                                                    <div class="icon-container">
+                                                        @if (sinema.Salons != null && sinema.Salons.Count > 0)
+                                                        {
+                                                            bool hasIMAX = sinema.Salons.Any(s => s.SalonTipi == 1);
+                                                            bool has4DX = sinema.Salons.Any(s => s.SalonTipi == 2);
+
+                                                            @if (hasIMAX)
+                                                            {
+                                                                <img src="~/img/icons/imax.png" alt="IMAX" class="icon" />
+                                                            }
+                                                            @if (has4DX)
+                                                            {
+                                                                <img src="~/img/icons/4dx.png" alt="4DX" class="icon" />
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>Kayıtlı sinema bulunmamaktadır.</p>
+                                }
+                            </div>
+                            <!-- /.sinema-grid -->
+                        </div><!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<style>
+    .sinema-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 20px;
+        justify-content: flex-start;
+    }
+
+    .sinema-card {
+        width: calc(33.333% - 20px); /* Üçlü düzen için genişlik */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        background-color: #fff;
+        transition: transform 0.2s, box-shadow 0.2s;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .sinema-card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .sinema-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .sinema-info h5 {
+        margin: 0;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .sinema-info p {
+        margin: 5px 0 0;
+        font-size: 14px;
+        color: #777;
+    }
+
+    .icon-container {
+        width: calc(100% - 20px);
+
+        margin-top: 10px;
+    }
+
+    .icon {
+        margin: 0 5px;
+    }
+
+</style>

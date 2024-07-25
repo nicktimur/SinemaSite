@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Bilet Al";
+    var gosterim = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(ViewBag.Gosterim);
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Bilet Satın Al</h1>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                @if (gosterim != null)
+                {
+                    <div class="col-md-4">
+                        <div class="film-card">
+                            <img src="@gosterim.Film.ResimYolu" class="film-image" alt="@gosterim.Film.Isim">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <!-- Film Bilgileri -->
+                        <div class="film-details-card">
+                            <div class="film-details-body">
+                                <h5 class="film-title">@gosterim.Film.Isim</h5>
+                                <p class="film-info">
+                                    <strong>Türler:</strong>
+                                @foreach(var tur in gosterim.Film.Turler){
+                                    <a>@tur, </a>
+                                }
+                                </p>
+
+
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p>Film bilgisi bulunamadı.</p>
+                }
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<style>
+    .film-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .film-image {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .film-details-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        background-color: #fff;
+    }
+
+    .film-details-body {
+        color: #333;
+    }
+
+    .film-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .film-info {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+        .film-info strong {
+            color: #555;
+        }
+
+    .content-wrapper {
+        padding: 20px;
+    }
+</style>

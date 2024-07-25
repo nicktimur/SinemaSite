@@ -74,40 +74,40 @@
                                         <!-- /.tab-pane -->
 
                                         <div class="tab-pane" id="yakinda">
-                                    <div class="film-grid">
-                                        @if (gelecek != null && gelecek.Count > 0)
-                                        {
-                                            foreach (var film in gelecek)
-                                            {
-                                                <div class="film-card">
-                                                    <div class="film-poster">
-                                                        @if (film.ResimYolu != null && !string.IsNullOrWhiteSpace(film.ResimYolu))
-                                                        {
-                                                            <img src="@film.ResimYolu" alt="@film.Isim" />
-                                                        }
-                                                        else
-                                                        {
-                                                            <img src="~/img/movies/default.jpg" alt="@film.Isim" />
-                                                        }
-                                                    </div>
-                                                    <div class="film-info">
-                                                        <h5>@film.Isim</h5>
-                                                        <p>
-                                                            @foreach (var Tur in film.Turler)
-                                                            {
-                                                                <a>@Tur,</a>
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <p>Kayıtlı film bulunmamaktadır.</p>
-                                        }
-                                    </div>
-                                    <!-- /.film-grid -->
+                                            <div class="film-grid">
+                                                @if (gelecek != null && gelecek.Count > 0)
+                                                {
+                                                    foreach (var film in gelecek)
+                                                    {
+                                                        <div class="film-card">
+                                                            <div class="film-poster">
+                                                                @if (film.ResimYolu != null && !string.IsNullOrWhiteSpace(film.ResimYolu))
+                                                                {
+                                                                    <img src="@film.ResimYolu" alt="@film.Isim" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <img src="~/img/movies/default.jpg" alt="@film.Isim" />
+                                                                }
+                                                            </div>
+                                                            <div class="film-info">
+                                                                <h5>@film.Isim</h5>
+                                                                <p>
+                                                                    @foreach (var Tur in film.Turler)
+                                                                    {
+                                                                        <a>@Tur,</a>
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <p>Kayıtlı film bulunmamaktadır.</p>
+                                                }
+                                            </div>
+                                            <!-- /.film-grid -->
                                         </div>
                                         <!-- /.tab-pane -->
 

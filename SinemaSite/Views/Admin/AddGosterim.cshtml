@@ -3,14 +3,8 @@
     Layout = "_LayoutAdmin";
     ViewBag.Title = "Gösterim Ekle";
     var user = Context.Items["CurrentUser"] as Kullanici;
-    var sinemalar = new List<SinemaSite.Models.Sinema>();
-    var filmler = new List<SinemaSite.Models.Film>();
-    if(ViewBag.Filmler is not null)
-    {
-        filmler = ViewBag.Filmler as List<SinemaSite.Models.Film>;
-    }
-    if(ViewBag.Sinemalar is not null)
-
+    var sinemalar = ViewBag.Sinemalar as IEnumerable<SinemaSite.Models.Sinema>;
+    var filmler = ViewBag.Filmler as IEnumerable<SinemaSite.Models.Film>;
 };
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->

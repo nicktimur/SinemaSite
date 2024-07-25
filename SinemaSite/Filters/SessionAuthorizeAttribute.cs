@@ -21,7 +21,7 @@ public class SessionAuthorizeAttribute : Attribute, IAuthorizationFilter
         }
         else if (_canGoLoggedIn && context.HttpContext.Session.GetString("user") == null)
         {
-            context.Result = new RedirectToActionResult("Index", "Home", null);
+            context.Result = new RedirectToActionResult("Login", "Account", null);
         }
     }
 }
