@@ -103,7 +103,10 @@
                                                                             @foreach (var salon in sinema.Salons)
                                                                             {
                                                                                 bool hasButtons = salon.Gosterims.Any(gosterim => gosterim.FilmId == film.Id && gosterim.SunumTarihi == date);
-                                                                                canShow = hasButtons;
+                                                                                if (hasButtons)
+                                                                                {
+                                                                                    canShow = false;
+                                                                                }
                                                                                 string salonStyle = hasButtons ? "" : "display:none;";
                                                                                 string logoPath = salon.SalonTipi switch
                                                                                 {
@@ -137,7 +140,7 @@
                                                                                     }
                                                                                 </div>
                                                                             }
-                                                                            @{string notFound = canShow ? "display:none;" : "";}
+                                                                            @{string notFound = canShow ? "" : "display:none;";}
                                                                             <div class="d-flex align-items-center mb-2">
                                                                                 <span class="me-2" style="@notFound">Bu film için gösterim bulunmamakta.</span>
                                                                             </div>

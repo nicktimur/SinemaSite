@@ -37,8 +37,71 @@
                                     <a>@tur, </a>
                                 }
                                 </p>
+                                <p class="film-info">
+                                    <strong>Sinema:</strong> @gosterim.Salon.Sinema.Isim
+                                </p>
+                                <p class="film-info">
+                                    <strong>Yayın Tarihi:</strong> @gosterim.Film.VizyonTarihi
+                                </p>
+                                <p class="film-info">
+                                    <strong>Gösterim Tarihi:</strong> @gosterim.SunumTarihi
+                                </p>
+                                <p class="film-info">
+                                    <strong>Gösterim Saati:</strong> @gosterim.SunumSaati
+                                </p>
+                                <p class="film-info">
+                                    <strong>Salon Numarası:</strong> @gosterim.Salon.SalonNumarasi
+                                </p>
+                                <p class="film-info">
+                                    <strong>Salon Tipi:</strong>
+                                    @{
+                                        var salonTipi = gosterim.Salon.SalonTipi;
+                                    }
+
+                                    @if (salonTipi == 0)
+                                    {
+                                        <span>Varsayılan</span>
+                                    }
+                                    else if (salonTipi == 1)
+                                    {
+                                        <img src="/img/icons/IMAX.png" alt="IMAX Logo" />
+                                    }
+                                    else if (salonTipi == 2)
+                                    {
+                                        <img src="/img/icons/4DX.png" alt="4DX Logo" />
+                                    }
+                                    else
+                                    {
+                                        <span>Bilgi Yok</span>
+                                    }
+                                </p>
+                                <p class="film-info">
+                                    <strong>Bilet Ücreti:</strong> @gosterim.Ucret TL
+                                </p>
+                                <p>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#purchaseModal">
+                                        Satın Al
+                                    </button>
+                                </p>
+                                <!-- Modal -->
+                                <div class="modal fade" id="purchaseModal" tabindex="-1" aria-labelledby="purchaseModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="purchaseModalLabel">Bilet Satın Al</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
 
 
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                                <button type="button" class="btn btn-primary" id="confirm-button">Satın Al</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -98,4 +161,6 @@
     .content-wrapper {
         padding: 20px;
     }
+
 </style>
+
