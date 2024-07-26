@@ -130,6 +130,24 @@ namespace SinemaSite.Controllers
         [SendUserInfo]
         public IActionResult Profile()
         {
+            var userJson = HttpContext.Session.GetString("user");
+            var userdata = JsonConvert.DeserializeObject<Kullanici>(userJson);
+            var user = _context.Kullanicis.Where(x => x.KullaniciAdi == userdata.KullaniciAdi).FirstOrDefault();
+
+            var tickets = _context.Tickets.Where(x => x.MusteriId == user.Id)
+                .Include(x => x.Gosterim)
+                .Include(x => x.Gosterim.Film)
+                .Include(x => x.Gosterim.Salon)
+                .Include(x => x.Gosterim.Salon.Sinema)
+                .OrderByDescending(x => x.OlusturulmaTarihi)
+                .ToList();
+
+            var groupedTickets = tickets
+                .GroupBy(t => t.SatinAlimTarihi)
+                .OrderByDescending(g => g.Key)
+                .ToList();
+
+            ViewBag.GroupedTickets = groupedTickets;
             return View();
         }
 
@@ -171,6 +189,31 @@ namespace SinemaSite.Controllers
                 ViewBag.Error = "Lütfen kullanılmayan bir mail veya kullanıcı adı giriniz.";
                 return View();
             }
+        }
+
+        [SendUserInfo]
+        [SessionAuthorize(true)]
+        public IActionResult BakiyeYukle()
+        {
+            return View();
+        }
+
+        [SendUserInfo]
+        [HttpPost]
+        public IActionResult BakiyeYukle(BalanceLoadModel bakiye)
+        {
+            var userJson = HttpContext.Session.GetString("user");
+            var userdata = JsonConvert.DeserializeObject<Kullanici>(userJson);
+            var currentUser = _context.Kullanicis.Where(x => x.KullaniciAdi == userdata.KullaniciAdi).FirstOrDefault();
+
+            currentUser.Bakiye += bakiye.YuklenecekMiktar;
+            _context.SaveChanges();
+
+            HttpContext.Session.Clear();
+            userJson = JsonConvert.SerializeObject(currentUser);
+            HttpContext.Session.SetString("user", userJson);
+
+            return View();
         }
 
         [HttpPost]

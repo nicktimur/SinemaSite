@@ -24,6 +24,8 @@ public class HomeController : Controller
         _db = db;
     }
 
+
+
     [SendUserInfo]
     public IActionResult Index()
     {
@@ -241,7 +243,7 @@ public class HomeController : Controller
     {
         if (request == null || !ModelState.IsValid)
         {
-            return BadRequest("Geçersiz veri.");
+            return BadRequest(new { message = "Geçersiz Veri." });
         }
 
         var userJson = HttpContext.Session.GetString("user");
@@ -250,7 +252,11 @@ public class HomeController : Controller
 
         if (currentUser == null)
         {
-            return BadRequest("Kullanıcı bulunamadı.");
+            return BadRequest(new { message = "Kullanıcı Bulunamadı" });
+        }
+        else if (currentUser.Bakiye < request.ToplamFiyat)
+        {
+            return BadRequest(new { message = "Bakiye Yetersiz." });
         }
 
         foreach (var seat in request.Seats)
@@ -266,6 +272,16 @@ public class HomeController : Controller
             _db.Tickets.Add(bilet);
             _db.SaveChanges();
         }
+        currentUser.Bakiye -= request.ToplamFiyat;
+        _db.SaveChanges();
+
+        var settings = new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
+        HttpContext.Session.Clear();
+        userJson = JsonConvert.SerializeObject(currentUser);
+        HttpContext.Session.SetString("user", userJson);
 
         // Satın alma işlemi başarılıysa
         return Json(new { success = true });

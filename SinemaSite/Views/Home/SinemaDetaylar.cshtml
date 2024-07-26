@@ -144,7 +144,7 @@
                                                                                                     <div class="modal-content">
                                                                                                         <div class="modal-header">
                                                                                                             <h4 class="modal-title">Gösterim Bilgileri</h4>
-                                                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
                                                                                                         </div>
                                                                                                         <div class="modal-body">
                                                                                                             <div class="col-lg-12" id="modal-body-content-@buttonStr">
@@ -200,6 +200,10 @@
     </section>
     <!-- /.content -->
 </div>
+<!-- SweetAlert2 -->
+<script src="/lib/sweetalert2/sweetalert2.min.js"></script>
+<!-- Toastr -->
+<script src="/lib/toastr/toastr.min.js"></script>
 <script>
     const selectedSeats = new Set();
     var seatPrice;
@@ -215,9 +219,6 @@
                 return response.json();
             })
             .then(data => {
-                console.log(data);
-
-                // Grid oluşturma
                 let seatingHtml = '';
                 const rows = data.salon.satir;
                 const cols = data.salon.sutun;
@@ -328,16 +329,32 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    window.location.href = '/Home';
-                } else {
-                    alert('Satın alma işlemi başarısız oldu. Lütfen tekrar deneyin.');
+                    window.location.href = '/Account/Profile';
+                } 
+                else {
+                    alert('Satın alma işlemi başarısız oldu. ' + data.message);
                 }
             })
             .catch(error => {
                 console.error('Bir hata oluştu:', error);
-                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+                alert(error.message);
             });
     }
+
+    function ShowToastr(message){
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        Toast.fire({
+            icon: 'success',
+            title: message
+        })
+    }
+
+  
 
 </script>
 

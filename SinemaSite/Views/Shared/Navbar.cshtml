@@ -18,9 +18,41 @@
         @if(user is not null)
         {
             <li class="nav-item d-none d-sm-inline-block">
-                <a class="nav-link">Bakiye: @user.Bakiye TL</a>
-            </li>            
+                <a class="nav-link"
+                   id="bakiyeLink"
+                   href="#"
+                   data-bakiye="@user.Bakiye"
+                   onmouseover="changeText()"
+                   onmouseout="resetText()">
+                    Bakiye: @user.Bakiye TL
+                </a>
+            </li>
         }
     </ul>
 </nav>
 <!-- /.navbar -->
+<script>
+    function changeText() {
+        const bakiyeLink = document.getElementById('bakiyeLink');
+        bakiyeLink.textContent = 'Bakiye Yükle';
+        bakiyeLink.href = '/Account/BakiyeYukle';
+    }
+
+    function resetText() {
+        const bakiyeLink = document.getElementById('bakiyeLink');
+        const userBakiye = bakiyeLink.getAttribute('data-bakiye');
+        bakiyeLink.textContent = `Bakiye: ${userBakiye} TL`;
+        bakiyeLink.href = '#';
+    }
+</script>
+
+<style>
+    .nav-link {
+        transition: color 0.3s ease; /* Renk değişimini yumuşatır */
+    }
+
+        .nav-link:hover {
+            color: #007bff; /* Link üzerine gelindiğinde renk değiştirir */
+            text-decoration: underline; /* Altı çizili hale getirir */
+        }
+</style>

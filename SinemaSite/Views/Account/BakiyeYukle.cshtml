@@ -1,0 +1,139 @@
+﻿@{
+    ViewData["Title"] = "Bakiye Yükle";
+}
+@model BalanceLoadModel
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Bakiye Yükleme</h1>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- /.col -->
+                <div class="col-md-6 offset-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="balance-form-container">
+                                <form asp-action="BakiyeYukle" method="post">
+                                    <div class="form-group">
+                                        <label for="YuklenecekMiktar">Yüklenecek Miktar: </label>
+                                        <input type="number" asp-for="YuklenecekMiktar" class="form-control" id="YuklenecekMiktar" placeholder="0.00" />
+                                        <span asp-validation-for="YuklenecekMiktar" class="text-danger"></span>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Yükle</button>
+                                </form>
+                            </div>
+                            <!-- /.balance-form-container -->
+                        </div><!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<style>
+    /* Genel sayfa stili */
+.content-wrapper {
+    background-color: #f4f6f9;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.content-header {
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.balance-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.balance-form-container .form-group {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.balance-form-container label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.balance-form-container .form-control {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    transition: border-color 0.3s;
+}
+
+.balance-form-container .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.balance-form-container .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.balance-form-container .btn-primary:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 91, 179, 0.2);
+}
+
+.text-danger {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+</style>
+

@@ -4,6 +4,16 @@
 @model Kullanici
 @{
     ViewData["Title"] = "Profil";
+    var groupedTickets = ViewBag.GroupedTickets as dynamic;
+}
+@functions {
+    // Satır ve sütunu harf ve numara formatına dönüştüren yardımcı metot
+    string ConvertToSeatDescription(int satir, int sutun)
+    {
+        // Satır bilgisi harfe dönüştürülüyor. Örneğin, 1 -> A, 2 -> B, vb.
+        char satirHarf = (char)('A' + (satir - 1));  // 1 için A, 2 için B, vb.
+        return $"{satirHarf}-{sutun} numaralı bilet alındı!";
+    }
 }
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 <!-- Content Wrapper. Contains page content -->
@@ -131,7 +141,50 @@
                                 <!-- /.tab-pane -->
 
                                 <div class="tab-pane" id="tickets">
-                                    
+                                    <!-- Timelime example  -->
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <!-- The time line -->
+                                            <div class="timeline">
+                                                @foreach (var group in groupedTickets)
+                                                {
+                                                    <div class="time-label">
+                                                        <span class="bg-red">@group.Key.ToString("dd MMM yyyy")</span>
+                                                    </div>
+                                                    <!-- /.timeline-label -->
+                                                    @foreach (var ticket in group)
+                                                    {
+                                                        <div>
+                                                            @{
+                                                                DateTime? olusturulmaTarihi = ticket.OlusturulmaTarihi; // Nullable DateTime
+                                                                string saat = olusturulmaTarihi.HasValue ? olusturulmaTarihi.Value.TimeOfDay.ToString(@"hh\:mm") : "Bilgi Yok";
+                                                                int? nullableInt = ticket.Satir;
+                                                                int satir = nullableInt.HasValue ? nullableInt.Value : 0;
+                                                                nullableInt = ticket.Sutun;
+                                                                int sutun = nullableInt.HasValue ? nullableInt.Value : 0;
+                                                                string koltukBilgisi = ConvertToSeatDescription(satir, sutun);
+                                                            }
+                                                            <i class="fas fa-envelope bg-blue"></i>
+                                                            <div class="timeline-item">
+                                                                <span class="time"><i class="fas fa-clock"></i> @saat</span>
+                                                                <h3 class="timeline-header"><a asp-controller="Home" asp-action="Detaylar" asp-route-id="@ticket.Gosterim.Film.Id">@ticket.Gosterim.Film.Isim</a> Filmine @ticket.Gosterim.Salon.Sinema.Isim Sinemasında @ticket.Gosterim.Salon.SalonNumarasi no'lu salonda bilet alındı!</h3>
+
+                                                                <div class="timeline-body">
+                                                                    @koltukBilgisi
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                                <div>
+                                                    <i class="fas fa-clock bg-gray"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.col -->
+                                    </div>
+                                </div>
+                                <!-- /.timeline -->
                                 </div>
                                 <!-- /.tab-pane -->
 

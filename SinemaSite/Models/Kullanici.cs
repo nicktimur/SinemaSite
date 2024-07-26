@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 namespace SinemaSite.Models;
 
@@ -33,5 +34,6 @@ public partial class Kullanici
 
     public DateTime? SonAktifTarih { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }
