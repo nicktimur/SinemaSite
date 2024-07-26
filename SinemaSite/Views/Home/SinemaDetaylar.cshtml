@@ -220,7 +220,7 @@
                 // Grid oluşturma
                 let seatingHtml = '';
                 const rows = data.salon.satir;
-                const cols = data.salon.sutun;  
+                const cols = data.salon.sutun;
                 // Biletler için bir set oluşturuluyor
                 const bookedSeats = new Set(data.tickets.map(ticket => `${ticket.satir}-${ticket.sutun}`));
                 seatPrice = data.ucret;
@@ -231,39 +231,39 @@
                         const seatLabel = String.fromCharCode(64 + i) + '-' + (j); // A, B, C... numaraları
                         const isBooked = bookedSeats.has(`${i}-${j}`);
                         rowHtml += `
-                                <div class="seat ${isBooked ? 'booked' : ''}" data-row="${i}" data-col="${j}" onclick="${isBooked ? '' : `selectSeat(${i}, ${j})`}">
-                                ${seatLabel}
-                            </div>
-                        `;
+                                    <div class="seat ${isBooked ? 'booked' : ''}" data-row="${i}" data-col="${j}" onclick="${isBooked ? '' : `selectSeat(${i}, ${j})`}">
+                                    ${seatLabel}
+                                </div>
+                            `;
                     }
                     seatingHtml += `<div class="row">${rowHtml}</div>`;
                 }
 
                 document.getElementById(`modal-body-content-${modalId}`).innerHTML = `
-                    <div class="modal-content">
-                        <div class="modal-info">
-                            <img src="${data.film.resimYolu}" alt="${data.film.isim}" class="mb-1" />
-                            <h5>Film: ${data.film.isim}</h5>
-                            <p><strong>Türler:</strong> ${data.film.turler.join(", ")}</p>
-                            <p><strong>Vizyon Tarihi:</strong> ${new Date(data.film.vizyonTarihi).toLocaleDateString()}</p>
-                            <p><strong>Salon:</strong> ${data.salon.salonNumarasi}. Salon</p>
-                            <p><strong>Sinema:</strong> ${data.salon.sinema.isim}</p>
-                            <p><strong>Adres:</strong> ${data.salon.sinema.adres}</p>
-                            <p><strong>Başlangıç Saati:</strong> ${data.sunumSaati}</p>
-                            <p><strong>Ücret:</strong> ${data.ucret} TL</p>
+                        <div class="modal-content">
+                            <div class="modal-info">
+                                <img src="${data.film.resimYolu}" alt="${data.film.isim}" class="mb-1" />
+                                <h5>Film: ${data.film.isim}</h5>
+                                <p><strong>Türler:</strong> ${data.film.turler.join(", ")}</p>
+                                <p><strong>Vizyon Tarihi:</strong> ${new Date(data.film.vizyonTarihi).toLocaleDateString()}</p>
+                                <p><strong>Salon:</strong> ${data.salon.salonNumarasi}. Salon</p>
+                                <p><strong>Sinema:</strong> ${data.salon.sinema.isim}</p>
+                                <p><strong>Adres:</strong> ${data.salon.sinema.adres}</p>
+                                <p><strong>Başlangıç Saati:</strong> ${data.sunumSaati}</p>
+                                <p><strong>Ücret:</strong> ${data.ucret} TL</p>
+                            </div>
+                            <div class="screen-label">Perde</div>
+                            <div class="seating-container">
+                                ${seatingHtml}
+                            </div>
                         </div>
-                        <div class="screen-label">Perde</div>
-                        <div class="seating-container">
-                            ${seatingHtml}
-                        </div>
-                    </div>
-                        <div class="selected-seats">
-                                <h5>Seçilen Koltuklar:</h5>
-                                <ul id="selected-seats-list">
-                                    <!-- Seçilen koltuklar buraya eklenecek -->
-                                </ul>
-                         </div>
-                `;
+                            <div class="selected-seats">
+                                    <h5>Seçilen Koltuklar:</h5>
+                                    <ul id="selected-seats-list">
+                                        <!-- Seçilen koltuklar buraya eklenecek -->
+                                    </ul>
+                             </div>
+                    `;
             })
             .catch(error => {
                 console.error('Veri çekilirken bir hata oluştu:', error);
