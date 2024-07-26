@@ -1,4 +1,5 @@
 ﻿@{
+    var user = Context.Items["CurrentUser"] as Kullanici;
     ViewData["Title"] = "Detaylar";
     var filmler = ViewBag.Filmler as List<SinemaSite.Models.Film>;
     var sinemalarJson = ViewBag.Sinemalar as string;
@@ -14,11 +15,11 @@
         var startOfWeek = now.AddDays(-(int)now.DayOfWeek + (int)DayOfWeek.Saturday);
 
         // Geçmiş haftanın cuması (bir hafta önce)
-        var startOfPreviousWeek = startOfWeek.AddDays(-6);
+        var startOfPreviousWeek = startOfWeek.AddDays(-7);
 
         // Bu tarihten itibaren bir hafta sürecek tarihler
         var dates = new List<DateOnly>();
-        for (var date = startOfPreviousWeek; date <= startOfWeek; date = date.AddDays(1))
+        for (var date = startOfPreviousWeek; date < startOfWeek; date = date.AddDays(1))
         {
             dates.Add(date);
         }
@@ -130,12 +131,42 @@
                                                                                             var showTime = gosterim.SunumSaati;
                                                                                             var isPast = DateTime.Now.TimeOfDay > showTime.ToTimeSpan(); // Geçmiş saati kontrol et
                                                                                             var buttonClass = isPast ? "btn btn-secondary disabled" : "btn btn-primary";
+                                                                                            var buttonStr = "Purchase_" + gosterim.Id;
 
                                                                                             <div class="col-lg-auto">
-                                                                                                <a asp-controller="Home" asp-action="SatinAl" asp-route-id="@gosterim.Id" class="btn @buttonClass" role="button">
+                                                                                                <button class="btn @buttonClass" role="button" data-bs-toggle="modal" data-bs-target="#@buttonStr" onclick="fetchGosterimDetails('@gosterim.Id', '@buttonStr')">
                                                                                                     @showTime
-                                                                                                </a>
+                                                                                                </button>
                                                                                             </div>
+                                                                                            <!-- Modal -->
+                                                                                            <div class="modal fade" id="@buttonStr" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+                                                                                                <div class="modal-dialog modal-xl">
+                                                                                                    <div class="modal-content">
+                                                                                                        <div class="modal-header">
+                                                                                                            <h4 class="modal-title">Gösterim Bilgileri</h4>
+                                                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                                        </div>
+                                                                                                        <div class="modal-body">
+                                                                                                            <div class="col-lg-12" id="modal-body-content-@buttonStr">
+                                                                                                                <!-- İçerik buraya yüklenecek -->
+                                                                                                                <p>Yükleniyor...</p>
+                                                                                                            </div>
+                                                                                                            <div class="col-lg-8" id="modal-body-ticket-@buttonStr">
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="modal-footer justify-content-between">
+                                                                                                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                                                                                                            <button type="button" onclick="submitSelectedSeats()" class="btn btn-primary"
+                                                                                                            @(user == null ? "disabled" : "")>
+                                                                                                                @(user == null ? "Önce Giriş Yapmalısın" : "Satın Al")
+                                                                                                            </button>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <!-- /.modal-content -->
+                                                                                                </div>
+                                                                                                <!-- /.modal-dialog -->
+                                                                                            </div>
+                                                                                            <!-- /.modal -->
                                                                                         }
                                                                                     }
                                                                                 </div>
@@ -169,6 +200,146 @@
     </section>
     <!-- /.content -->
 </div>
+<script>
+    const selectedSeats = new Set();
+    var seatPrice;
+    var show;
+    function fetchGosterimDetails(gosterimId, modalId) {
+        selectedSeats.clear();
+        const url = `/GetGosterimInfo/${gosterimId}`;
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+
+                // Grid oluşturma
+                let seatingHtml = '';
+                const rows = data.salon.satir;
+                const cols = data.salon.sutun;  
+                // Biletler için bir set oluşturuluyor
+                const bookedSeats = new Set(data.tickets.map(ticket => `${ticket.satir}-${ticket.sutun}`));
+                seatPrice = data.ucret;
+                show = data.id;
+                for (let i = 1; i <= rows; i++) {
+                    let rowHtml = '';
+                    for (let j = 1; j <= cols; j++) {
+                        const seatLabel = String.fromCharCode(64 + i) + '-' + (j); // A, B, C... numaraları
+                        const isBooked = bookedSeats.has(`${i}-${j}`);
+                        rowHtml += `
+                                <div class="seat ${isBooked ? 'booked' : ''}" data-row="${i}" data-col="${j}" onclick="${isBooked ? '' : `selectSeat(${i}, ${j})`}">
+                                ${seatLabel}
+                            </div>
+                        `;
+                    }
+                    seatingHtml += `<div class="row">${rowHtml}</div>`;
+                }
+
+                document.getElementById(`modal-body-content-${modalId}`).innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-info">
+                            <img src="${data.film.resimYolu}" alt="${data.film.isim}" class="mb-1" />
+                            <h5>Film: ${data.film.isim}</h5>
+                            <p><strong>Türler:</strong> ${data.film.turler.join(", ")}</p>
+                            <p><strong>Vizyon Tarihi:</strong> ${new Date(data.film.vizyonTarihi).toLocaleDateString()}</p>
+                            <p><strong>Salon:</strong> ${data.salon.salonNumarasi}. Salon</p>
+                            <p><strong>Sinema:</strong> ${data.salon.sinema.isim}</p>
+                            <p><strong>Adres:</strong> ${data.salon.sinema.adres}</p>
+                            <p><strong>Başlangıç Saati:</strong> ${data.sunumSaati}</p>
+                            <p><strong>Ücret:</strong> ${data.ucret} TL</p>
+                        </div>
+                        <div class="screen-label">Perde</div>
+                        <div class="seating-container">
+                            ${seatingHtml}
+                        </div>
+                    </div>
+                        <div class="selected-seats">
+                                <h5>Seçilen Koltuklar:</h5>
+                                <ul id="selected-seats-list">
+                                    <!-- Seçilen koltuklar buraya eklenecek -->
+                                </ul>
+                         </div>
+                `;
+            })
+            .catch(error => {
+                console.error('Veri çekilirken bir hata oluştu:', error);
+                document.getElementById(`modal-body-content-${modalId}`).innerHTML = `<p>Veri yüklenemedi. Lütfen daha sonra tekrar deneyin.</p>`;
+            });
+    }
+
+
+    function selectSeat(row, col) {
+        const seat = document.querySelector(`.seat[data-row="${row}"][data-col="${col}"]`);
+        if (seat && !seat.classList.contains('booked')) {
+            if (selectedSeats.has(`${row}-${col}`)) {
+                // Daha önce seçilmiş koltuğa tekrar tıklanırsa, seçimden çıkar
+                seat.classList.remove('selected');
+                selectedSeats.delete(`${row}-${col}`);
+            } else {
+                // Seçim ekle
+                seat.classList.add('selected');
+                selectedSeats.add(`${row}-${col}`);
+            }
+
+            // Seçilen koltukları listele
+            updateSelectedSeatsList();
+        }
+    }
+
+    function updateSelectedSeatsList() {
+        const list = document.getElementById('selected-seats-list');
+        list.innerHTML = '';
+        selectedSeats.forEach(seat => {
+            const [row, col] = seat.split('-');
+            const seatLabel = String.fromCharCode(65 + parseInt(row) - 1) + '-' + (parseInt(col));
+            const listItem = document.createElement('li');
+            listItem.textContent = seatLabel;
+            list.appendChild(listItem);
+        });
+    }
+
+    function submitSelectedSeats() {
+
+        var totalPrice = selectedSeats.size * seatPrice
+        const seatArray = Array.from(selectedSeats);
+        // Koltukları satır ve sütun olarak dönüştür
+        const seats = seatArray.map(seat => {
+            const [row, col] = seat.split('-').map(Number);
+            return { row, col };
+        });
+        var showId = show;
+
+        // Fetch isteği ile verileri gönder
+        fetch('/submitSeats', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                seats: seats,
+                toplamFiyat: totalPrice,
+                gosterimId: showId
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/Home';
+                } else {
+                    alert('Satın alma işlemi başarısız oldu. Lütfen tekrar deneyin.');
+                }
+            })
+            .catch(error => {
+                console.error('Bir hata oluştu:', error);
+                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            });
+    }
+
+</script>
 
 <style>
     .film-card {
@@ -212,4 +383,92 @@
     .icon {
         margin: 0 5px;
     }
+    /* Modal içeriği için düzenlemeler */
+    .modal-content {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .modal-info {
+        margin-bottom: 10px;
+        padding: 10px 15px; /* İçerik etrafında biraz boşluk bırakır */
+        display: flex;
+        gap: 10px; /* Elemanlar arasındaki boşluk */
+    }
+
+        .modal-info img {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+        }
+
+        .modal-info h5, .modal-info p {
+            margin: 5px 0;
+        }
+    /* Flexbox düzenlemesi için CSS */
+    .seating-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px; /* Satırlar arasındaki boşluk */
+    }
+
+    .seat {
+        width: 40px;
+        height: 40px;
+        background-color: #d3d3d3;
+        border: 1px solid #000;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin: 2px;
+        font-size: 12px; /* Yazı boyutu */
+    }
+
+        .seat:hover {
+            background-color: #a9a9a9;
+        }
+
+    .booked {
+        background-color: #808080; /* Seçilemez koltuklar için renk */
+        cursor: not-allowed;
+    }
+
+    .selected {
+        background-color: #00ff00; /* Seçilen koltuk için renk */
+    }
+    /* Seçilen koltuklar listesi için CSS */
+    .selected-seats {
+        margin-top: 20px;
+    }
+
+        .selected-seats ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .selected-seats li {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #000;
+        }
+
+    /* Perde yazısı için stil */
+    .screen-label {
+        text-align: center;
+        font-size: 16px; /* Yazı boyutu */
+        color: #000; /* Yazı rengi */
+        font-weight: bold;
+        margin: 20px 0; /* Perde yazısının üst ve alt boşluğu */
+    }
+
 </style>

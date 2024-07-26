@@ -181,9 +181,9 @@ public class HomeController : Controller
         return View();
     }
 
-    [SendUserInfo]
-    [SessionAuthorize(true)]
-    public IActionResult SatinAl(int id)
+
+    [HttpGet("GetGosterimInfo/{id}")]
+    public IActionResult GetGosterimInfo(int id)
     {
 
         var gosterim = _db.Gosterims
@@ -229,11 +229,61 @@ public class HomeController : Controller
            }).ToList()
        }).FirstOrDefault();
 
-        var jsonGosterim = JsonConvert.SerializeObject(gosterim);
+        if (gosterim == null)
+        {
+            return NotFound();
+        }
 
-        ViewBag.Gosterim = jsonGosterim;
-        return View();
+        return Json(gosterim);
     }
+    [HttpPost("submitSeats")]
+    public IActionResult SubmitSeats([FromBody] SubmitSeatsRequest request)
+    {
+        if (request == null || !ModelState.IsValid)
+        {
+            return BadRequest("Geçersiz veri.");
+        }
+
+        var userJson = HttpContext.Session.GetString("user");
+        var userdata = JsonConvert.DeserializeObject<Kullanici>(userJson);
+        var currentUser = _db.Kullanicis.Where(x => x.KullaniciAdi == userdata.KullaniciAdi).FirstOrDefault();
+
+        if (currentUser == null)
+        {
+            return BadRequest("Kullanıcı bulunamadı.");
+        }
+
+        foreach (var seat in request.Seats)
+        {
+            Ticket bilet = new Ticket()
+            {
+                GosterimId = request.GosterimId,
+                Satir = seat.Row,
+                Sutun = seat.Col,
+                MusteriId = currentUser.Id,
+                SatinAlimTarihi = DateOnly.FromDateTime(DateTime.Now)
+            };
+            _db.Tickets.Add(bilet);
+            _db.SaveChanges();
+        }
+
+        // Satın alma işlemi başarılıysa
+        return Json(new { success = true });
+    }
+
+    public class SubmitSeatsRequest
+    {
+        public List<Seat> Seats { get; set; }
+        public int ToplamFiyat { get; set; }
+        public int GosterimId { get; set; }
+    }
+
+    public class Seat
+    {
+        public int Col { get; set; }
+        public int Row { get; set; }
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
