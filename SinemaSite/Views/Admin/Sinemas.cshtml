@@ -1,7 +1,7 @@
 ﻿@{
     var user = Context.Items["CurrentUser"] as Kullanici;
 }
-@model SalonEditModel
+@model SinemaSite.Models.Sinema
 @{
     ViewData["Title"] = "Ayarlar";
     Layout = "_LayoutAdmin";
@@ -16,7 +16,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Salonlar</h1>
+                    <h1>Sinemalar</h1>
                 </div>
             </div>
         </div><!-- /.container-fluid -->
@@ -29,7 +29,7 @@
                     <div class="card">
                         <div class="card-header p-2">
                             <ul class="nav nav-pills">
-                                <li class="nav-item"><a class="nav-link active" href="#show_salons" data-toggle="tab">Salonlar</a></li>
+                                <li class="nav-item"><a class="nav-link active" href="#show_salons" data-toggle="tab">Sinemalar</a></li>
                             </ul>
                         </div>
                         <!-- /.card-header -->
@@ -39,7 +39,7 @@
                                     <div class="col-md-15">
                                         <div class="card">
                                             <div class="card-header">
-                                                <h3 class="card-title">Salonlar</h3>
+                                                <h3 class="card-title">Sinemalar</h3>
                                             </div>
                                             @if (ViewBag.Error != null)
                                             {
@@ -53,59 +53,33 @@
                                                 <div class="modal-dialog modal-lg">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h4 class="modal-title">Sinema ve Salon Düzenle</h4>
+                                                            <h4 class="modal-title">Sinema sil</h4>
                                                             <button type="button" data-backdrop="false" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <form method="post" asp-action="Salons">
+                                                            <form method="post" asp-action="Sinemas">
                                                                 <div class="modal-body">
-                                                                    <input hidden asp-for="SalonId" type="text" id="SalonId" class="form-control" placeholder="">
+                                                                    <input hidden asp-for="Id" type="text" id="SinemaId" class="form-control" placeholder="">
                                                                     <div class="form-group row">
                                                                         <label class="col-sm-2 col-form-label">Sinema Adı:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input asp-for="SinemaAdi" type="text" id="SinemaAdi" class="form-control" placeholder="">
+                                                                            <input asp-for="Isim" type="text" id="SinemaAdi" class="form-control" placeholder="" readonly>
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group row">
                                                                         <label class="col-sm-2 col-form-label">Sinema Adresi:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input asp-for="SinemaAdres" type="text" id="SinemaAdres" class="form-control" placeholder="">
+                                                                            <input asp-for="Adres" type="text" id="SinemaAdres" class="form-control" placeholder="" readonly>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="modal-footer justify-content-between"></div>
-                                                                    <div class="form-group row">
-                                                                        <label class="col-sm-2 col-form-label">Salon Numarası:</label>
-                                                                        <div class="col-sm-10">
-                                                                            <input asp-for="SalonNumarasi" type="text" id="SalonNumarasi" class="form-control" placeholder="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group row">
-                                                                        <label class="col-sm-2 col-form-label">Satır:</label>
-                                                                        <div class="col-sm-10">
-                                                                            <input asp-for="Satir" type="text" id="Satir" class="form-control" placeholder="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group row">
-                                                                        <label class="col-sm-2 col-form-label">Sütun:</label>
-                                                                        <div class="col-sm-10">
-                                                                            <input asp-for="Sutun" type="text" id="Sutun" class="form-control" placeholder="">
-                                                                        </div>
-                                                                    </div>
-
                                                                 </div>
                                                                 <div class="modal-footer justify-content-between">
                                                                     <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-outline-light">Kapat</button>
-                                                                    <button type="submit" class="btn btn-primary">Düzenlemeyi Kaydet</button>
-                                                            </form>
-                                                                    <form method="post" asp-action="DeleteSalon">
-                                                                        <input hidden asp-for="SalonId" type="text" id="DeleteSalonId" class="form-control" placeholder="">
-                                                                            <button type="submit" class="btn btn-danger">
-                                                                                Salonu Sil
-                                                                            </button>
-                                                                    </form>
+                                                                    <button type="submit" class="btn btn-danger">Salonu Sil</button>
                                                                 </div>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                     <!-- /.modal-content -->
@@ -150,21 +124,14 @@
 
 
     sinemalar.forEach(function (sinema) {
-        sinema.Salons.forEach(function (salon) {
-            const salonType = SalonTypeNames[salon.SalonTipi];
             rowData.push({
-                "Id": salon.Id,
+                "Id": sinema.Id,
                 "Sinema Adı": sinema.Isim,
                 "Sinema Adresi": sinema.Adres,
-                "Salon Numarası": salon.SalonNumarasi,
-                "Sütun Sayısı": salon.Sutun,
-                "Satır Sayısı": salon.Satir,
-                "Salon Tipi": salonType,
-                "Silinme Tarihi": salon.SilinmeTarihi,
-                "Güncelleme Tarihi": salon.GuncellemeTarihi,
-                "Düzenle": `<button class = "btn btn-link edit-button" data-id=${salon.Id} data-target="#edit_modal">Düzenle</button>`,
+                "Silinme Tarihi": sinema.SilinmeTarihi,
+                "Güncelleme Tarihi": sinema.GuncellemeTarihi,
+                "Sil": `<button class = "btn btn-link edit-button" data-id=${sinema.Id} data-target="#edit_modal">Sil</button>`,
             });
-        });
     });
 
     const gridOptions = {
@@ -180,22 +147,6 @@
                 filter: 'agTextColumnFilter'
             },
             { 
-                field: "Salon Numarası",
-                filter: 'agNumberColumnFilter'
-            },
-            {
-                field: "Satır Sayısı",
-                filter: 'agNumberColumnFilter'
-            },
-            { 
-                field: "Sütun Sayısı",
-                filter: 'agNumberColumnFilter'
-            },
-            { 
-                field: "Salon Tipi",
-                filter: 'agTextColumnFilter'
-            },
-            { 
                 field: "Silinme Tarihi",
                 filter: 'agDateColumnFilter'
             },
@@ -204,9 +155,9 @@
                 filter: 'agDateColumnFilter'
             },
             {
-                field: "Düzenle",
+                field: "Sil",
                 cellRenderer: function (params) {
-                    return `<button class = "btn btn-link edit-button" data-id=${params.data['Id']} data-target="#edit_modal">Düzenle</button>`
+                    return `<button class = "btn btn-danger edit-button" data-id=${params.data['Id']} data-target="#edit_modal">Sil</button>`
                 },
                 flex: 1
             },
@@ -235,9 +186,9 @@
 
         gridContainer.addEventListener('click', function (event) {
             if (event.target.classList.contains('edit-button')) {
-                const salonId = event.target.getAttribute('data-id');
-                if (salonId) {
-                    fetch(`/GetSinemaInfo/${salonId}`)
+                const sinemaId = event.target.getAttribute('data-id');
+                if (sinemaId) {
+                    fetch(`/GetSinemasInfo/${sinemaId}`)
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -245,20 +196,16 @@
                             return response.json();
                         })
                         .then(sinema => {
-                            document.getElementById('SalonId').value = sinema.salons[0].id;
-                            document.getElementById('DeleteSalonId').value = sinema.salons[0].id;
+                            document.getElementById('SinemaId').value = sinema.id;
                             document.getElementById('SinemaAdi').placeholder = sinema.isim;
                             document.getElementById('SinemaAdres').placeholder = sinema.adres;
-                            document.getElementById('SalonNumarasi').placeholder = sinema.salons[0].salonNumarasi;
-                            document.getElementById('Satir').placeholder = sinema.salons[0].satir;
-                            document.getElementById('Sutun').placeholder = sinema.salons[0].sutun;
                             $('#edit_modal').modal('show');
                         })
                         .catch(error => {
                             console.error('Error:', error.message);
                         });
                 } else {
-                    console.error('Salon ID not found');
+                    console.error('Sinema ID not found');
                 }
             }
         });

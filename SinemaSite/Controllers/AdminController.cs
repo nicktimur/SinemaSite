@@ -286,6 +286,54 @@ namespace SinemaSite.Controllers
 
         }
 
+        [SendUserInfo]
+        [AdminOnly]
+        public IActionResult Sinemas()
+        {
+            var sinemalar = _db.Sinemas
+                .Select(s => new
+                {
+                    s.Id,
+                    s.Isim,
+                    s.Adres,
+                    s.OlusturulmaTarihi,
+                    s.SilinmeTarihi,
+                    s.GuncellemeTarihi,
+                })
+                .ToList();
+            ViewBag.Sinemalar = JsonConvert.SerializeObject(sinemalar);
+            return View();
+        }
+
+        [HttpPost]
+        [SendUserInfo]
+        [AdminOnly]
+        public IActionResult Sinemas(Sinema alinanSinema)
+        {
+            var sinema = _db.Sinemas.Where(s => s.Id == alinanSinema.Id).FirstOrDefault();
+            sinema.SilinmeTarihi = DateTime.Now;
+            foreach(var salon in sinema.Salons)
+            {
+                salon.SilinmeTarihi = DateTime.Now;
+            }
+            _db.SaveChanges();
+            var sinemalar = _db.Sinemas
+    .Select(s => new
+    {
+        s.Id,
+        s.Isim,
+        s.Adres,
+        s.OlusturulmaTarihi,
+        s.SilinmeTarihi,
+        s.GuncellemeTarihi,
+    })
+    .ToList();
+
+            ViewBag.Sinemalar = JsonConvert.SerializeObject(sinemalar);
+            return View();
+
+        }
+
         [HttpGet("GetUserInfo/{id}")]
         public IActionResult GetUserInfo(int id)
         {
@@ -325,6 +373,27 @@ namespace SinemaSite.Controllers
                                 sa.GuncellemeTarihi,
                             })
                             .ToList()
+                    })
+                    .FirstOrDefault();
+            if (sinema == null)
+            {
+                return NotFound();
+            }
+            return Json(sinema);
+        }
+        [HttpGet("GetSinemasInfo/{id}")]
+        public IActionResult GetSinemasInfo(int id)
+        {
+            var sinema = _db.Sinemas
+                    .Where(s => s.Id == id)
+                    .Select(s => new
+                    {
+                        s.Id,
+                        s.Isim,
+                        s.Adres,
+                        s.OlusturulmaTarihi,
+                        s.SilinmeTarihi,
+                        s.GuncellemeTarihi,
                     })
                     .FirstOrDefault();
             if (sinema == null)
