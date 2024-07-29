@@ -98,7 +98,31 @@
                                                                 <div class="modal-footer justify-content-between">
                                                                     <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-outline-light">Kapat</button>
                                                                     <button type="submit" class="btn btn-primary">Düzenlemeyi Kaydet</button>
+                                                                </div>
                                                             </form>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                            <!-- /.modal -->
+                                            <!-- /.card-body -->
+                                            <div class="modal fade" data-backdrop="false" id="delete_modal">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Salonu Sil</h4>
+                                                            <button type="button" data-backdrop="false" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                                <div class="modal-body">
+                                                                    <p>Bu salonu silmek istediğinize emin misiniz?</p>
+                                                                </div>
+                                                                <div class="modal-footer justify-content-between">
+                                                                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-outline-light">Kapat</button>
                                                                     <form method="post" asp-action="DeleteSalon">
                                                                         <input hidden asp-for="SalonId" type="text" id="DeleteSalonId" class="form-control" placeholder="">
                                                                             <button type="submit" class="btn btn-danger">
@@ -113,7 +137,6 @@
                                                 <!-- /.modal-dialog -->
                                             </div>
                                             <!-- /.modal -->
-                                            <!-- /.card-body -->
                                         </div>
                                         <!-- /.card -->
                                     </div>
@@ -163,6 +186,7 @@
                 "Silinme Tarihi": salon.SilinmeTarihi,
                 "Güncelleme Tarihi": salon.GuncellemeTarihi,
                 "Düzenle": `<button class = "btn btn-link edit-button" data-id=${salon.Id} data-target="#edit_modal">Düzenle</button>`,
+                "Sil": `<button class = "btn btn-danger delete-button" data-id=${salon.Id} data-target="#delete_modal">Sil</button>`,
             });
         });
     });
@@ -210,6 +234,13 @@
                 },
                 flex: 1
             },
+                        {
+                field: "Sil",
+                cellRenderer: function (params) {
+                    return `<button class = "btn btn-danger delete-button" data-id=${params.data['Id']} data-target="#delete_modal">Sil</button>`
+                },
+                flex: 1
+            },
         ],
         defaultColDef: {
             flex: 1,
@@ -253,6 +284,29 @@
                             document.getElementById('Satir').placeholder = sinema.salons[0].satir;
                             document.getElementById('Sutun').placeholder = sinema.salons[0].sutun;
                             $('#edit_modal').modal('show');
+                        })
+                        .catch(error => {
+                            console.error('Error:', error.message);
+                        });
+                } else {
+                    console.error('Salon ID not found');
+                }
+            }
+        });
+        gridContainer.addEventListener('click', function (event) {
+            if (event.target.classList.contains('delete-button')) {
+                const salonId = event.target.getAttribute('data-id');
+                if (salonId) {
+                    fetch(`/GetSinemaInfo/${salonId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(sinema => {
+                            document.getElementById('DeleteSalonId').value = sinema.salons[0].id;
+                            $('#delete_modal').modal('show');
                         })
                         .catch(error => {
                             console.error('Error:', error.message);

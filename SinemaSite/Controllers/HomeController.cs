@@ -175,8 +175,8 @@ public class HomeController : Controller
                             .ToList();
 
         DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
-        DateOnly twoWeeksAgo = currentDate.AddDays(-14);
-        var filmler = _db.Films.Where(x => x.VizyonTarihi >= twoWeeksAgo).ToList();
+        DateOnly oneMonthAgo = currentDate.AddDays(-30);
+        var filmler = _db.Films.Where(x => x.VizyonTarihi >= oneMonthAgo).ToList();
 
         ViewBag.Filmler = filmler;
         ViewBag.Sinemalar = JsonConvert.SerializeObject(sinema);

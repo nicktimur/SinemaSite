@@ -177,7 +177,8 @@ namespace SinemaSite.Controllers
                         sa.OlusturulmaTarihi,
                         sa.SilinmeTarihi,
                         sa.GuncellemeTarihi,
-                    }).ToList()
+                    }).Where(sa => sa.SilinmeTarihi == null)
+                    .ToList()
                 })
                 .ToList();
             ViewBag.Sinemalar = JsonConvert.SerializeObject(sinemalar);
@@ -381,6 +382,30 @@ namespace SinemaSite.Controllers
             }
             return Json(sinema);
         }
+
+        [HttpGet("GetFilmInfo/{id}")]
+        public IActionResult GetFilmInfo(int id)
+        {
+            var film = _db.Films
+                    .Where(f => f.Id == id)
+                    .Select(s => new
+                    {
+                        s.Id,
+                        s.Isim,
+                        s.Turler,
+                        s.OlusturulmaTarihi,
+                        s.SilinmeTarihi,
+                        s.GuncellemeTarihi,
+                       
+                    })
+                    .FirstOrDefault();
+            if (film == null)
+            {
+                return NotFound();
+            }
+            return Json(film);
+        }
+
         [HttpGet("GetSinemasInfo/{id}")]
         public IActionResult GetSinemasInfo(int id)
         {
@@ -556,6 +581,54 @@ namespace SinemaSite.Controllers
                 return NotFound();
             }
             return Json(salonlar);
+        }
+
+        [SendUserInfo]
+        [AdminOnly]
+        public IActionResult Films()
+        {
+            var filmler = _db.Films
+                .Select(s => new
+                {
+                    s.Id,
+                    s.Isim,
+                    s.Turler,
+                    s.VizyonTarihi,
+                    s.Sure,
+                    s.OlusturulmaTarihi,
+                    s.SilinmeTarihi,
+                    s.GuncellemeTarihi,
+                })
+                .ToList();
+            ViewBag.Filmler = JsonConvert.SerializeObject(filmler);
+            return View();
+        }
+
+        [SendUserInfo]
+        [AdminOnly]
+        [HttpPost]
+        public IActionResult Films(Film flm)
+        {
+            var film = _db.Films.Where(f => f.Id == flm.Id).FirstOrDefault();
+            film.Isim = flm.Isim ?? film.Isim;
+            film.Turler = flm.Turler ?? film.Turler;
+            _db.SaveChanges();
+
+            var filmler = _db.Films
+                .Select(s => new
+                {
+                    s.Id,
+                    s.Isim,
+                    s.Turler,
+                    s.VizyonTarihi,
+                    s.Sure,
+                    s.OlusturulmaTarihi,
+                    s.SilinmeTarihi,
+                    s.GuncellemeTarihi,
+                })
+                .ToList();
+            ViewBag.Filmler = JsonConvert.SerializeObject(filmler);
+            return View();
         }
     }
 }

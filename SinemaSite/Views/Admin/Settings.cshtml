@@ -57,57 +57,56 @@
                                                                     <div class="modal-body">
                                                                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                                                         <input hidden asp-for="Id" type="text" id="UserId" class="form-control" placeholder="">
-                                                                        <div class="form-group row">
-                                                                            <label class="col-sm-2 col-form-label">Kullanıcı Adı:</label>
-                                                                            <div class="col-sm-10">
-                                                                                <input asp-for="KullaniciAdi" type="text" id="kullaniciAdi" class="form-control" placeholder="">
+                                                                        <div class="col-lg-auto">
+                                                                            <div class="form-group row">
+                                                                                <label class="col-sm-2 col-form-label">Kullanıcı Adı:</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input asp-for="KullaniciAdi" type="text" id="kullaniciAdi" class="form-control" placeholder="">
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="form-group row">
-                                                                            <label class="col-sm-2 col-form-label">İsim:</label>
-                                                                            <div class="col-sm-10">
-                                                                                <input asp-for="Isim" type="text" id="isim" class="form-control" placeholder="">
+                                                                        <div class="col-lg-auto">
+                                                                            <div class="form-group row">
+                                                                                <label class="col-sm-2 col-form-label">İsim:</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input asp-for="Isim" type="text" id="isim" class="form-control" placeholder="">
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="form-group row">
-                                                                            <label class="col-sm-2 col-form-label">Soyisim:</label>
-                                                                            <div class="col-sm-10">
-                                                                                <input asp-for="Soyisim" type="text" id="soyisim" class="form-control" placeholder="">
+                                                                        <div class="col-lg-auto">
+                                                                            <div class="form-group row">
+                                                                                <label class="col-sm-2 col-form-label">Soyisim:</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input asp-for="Soyisim" type="text" id="soyisim" class="form-control" placeholder="">
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="form-group row">
-                                                                            <label class="col-sm-2 col-form-label">Email:</label>
-                                                                            <div class="col-sm-10">
-                                                                                <input asp-for="Email" type="email" id="email" class="form-control" placeholder="">
+                                                                        <div class="col-lg-auto">
+                                                                            <div class="form-group row">
+                                                                                <label class="col-sm-2 col-form-label">Email:</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input asp-for="Email" type="email" id="email" class="form-control" placeholder="">
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="form-group row">
-                                                                            <label class="col-sm-2 col-form-label">Kullanıcı Türü:</label>
-                                                                            <select asp-for="KullaniciTipi" id="userTypeSelect" class="form-select" aria-label="Default select example">
-                                                                                <option value=0>Müşteri</option>
-                                                                                <option value=1>Personel</option>
-                                                                                <option value=2>Admin</option>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group row">
-                                                                            <label class="col-sm-2 col-form-label">Aktif Mi?:</label>
-                                                                            <div class="col-sm-2">
-                                                                            <input asp-for="AktifMi" type="checkbox" id="AktifMi" class="form-check-input" placeholder="">
+                                                                        <div class="col-lg-auto">
+                                                                            <div class="form-group row">
+                                                                                <label class="col-sm-2 col-form-label">Kullanıcı Türü:</label>
+                                                                                <div class="col-sm-10">
+                                                                                <select asp-for="KullaniciTipi" id="userTypeSelect" class="form-select" style="  margin: auto; width: 100%; padding: 10px;" aria-label="Default select example">
+                                                                                        <option value=0>Müşteri</option>
+                                                                                        <option value=1>Personel</option>
+                                                                                        <option value=2>Admin</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <br />
                                                                             </div>
                                                                         </div>
-
                                                                     </div>
                                                                     <div class="modal-footer justify-content-between">
                                                                         <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-outline-light">Kapat</button>
                                                                         <button type="submit" class="btn btn-primary">Düzenlemeyi Kaydet</button>
                                                                 </form>
-                                                                    <form method="post" asp-action="DeleteUser">
-                                                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                                                        <input hidden asp-for="Id" type="text" id="DeleteUserId" class="form-control" placeholder="">
-                                                                            <button type="submit" class="btn btn-danger">
-                                                                                Hesabı Sil
-                                                                            </button>
-                                                                    </form>
                                                                     </div>
                                                             </div>
                                                         </div>
@@ -116,6 +115,36 @@
                                                     <!-- /.modal-dialog -->
                                                 </div>
                                                 <!-- /.modal -->
+                                        <div class="modal fade" data-backdrop="false" id="delete_modal">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Kullanıcıyı Düzenle</h4>
+                                                        <button type="button" data-backdrop="false" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                            <div class="modal-body">
+                                                                <p>Bu hesabı silmek istediğinize emin misiniz?</p>
+                                                            </div>
+                                                            <div class="modal-footer justify-content-between">
+                                                                <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-outline-light">Kapat</button>
+                                                        <form method="post" asp-action="DeleteUser">
+                                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                            <input hidden asp-for="Id" type="text" id="DeleteUserId" class="form-control" placeholder="">
+                                                            <button type="submit" class="btn btn-danger">
+                                                                Hesabı Sil
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- /.modal-content -->
+                                        </div>
+                                        <!-- /.modal-dialog -->
+                                    </div>
+                                    <!-- /.modal -->
                                                 </div>
                                             <!-- /.card-body -->
                                         </div>
@@ -151,6 +180,11 @@
         1: 'Personel',
         2: 'Admin'
     };
+    const ragCellClassRules = {
+        // apply green to electric cars
+        "rag-green": (params) => params.value === true,
+        "rag-red": (params) => params.value === false,
+    };
 
 
     users.forEach(function (user) {
@@ -167,7 +201,8 @@
             "Silinme Tarihi": user.SilinmeTarihi,
             "Güncelleme Tarihi": user.GuncellemeTarihi,
             "Son Aktif Tarihi": user.SonAktifTarih,
-            "Düzenle": `<button class = "btn btn-link edit-button" data-id=${user.Id} data-target="#edit_modal">Düzenle</button>`,
+            "Düzenle": `<button class = "btn btn-link edit-button" data-id=${user.Id} data-target="#edit_modal">Düzenle</button>
+                <button class = "btn btn-danger delete-button" data-id=${user.Id} data-target="#delete_modal">Sil</button>`,
         });
     });
 
@@ -178,7 +213,9 @@
             { field: "İsim", },
             { field: "Soyisim" },
             { field: "Kullanıcı Adı" },
-            { field: "Email" },
+            { field: "Email",
+                minWidth: 200
+            },
             { 
                 field: "Kullanıcı Tipi",
                 cellEditor: "agSelectCellEditor",
@@ -190,19 +227,35 @@
                     ],
                 }
             },
-            { field: "Bakiye", filter: "agNumberColumnFilter" },
-            { field: "Aktif Mi?" },
+            { 
+                field: "Bakiye", 
+                filter: "agNumberColumnFilter",
+                minWidth: 75
+            },
+            { field: "Aktif Mi?", minWidth: 75 },
             { field: "Silinme Tarihi" },
             { field: "Güncelleme Tarihi" },
             { field: "Son Aktif Tarihi" },
             {
                 field: "Düzenle",
                 cellRenderer: function (params) {
-                    return `<button class = "btn btn-link edit-button" data-id=${params.data['Id']} data-target="#edit_modal">Düzenle</button>`
+                    return `<button class = "btn btn-link edit-button" data-id=${params.data['Id']} data-target="#edit_modal">Düzenle</button>
+                        <button class = "btn btn-danger delete-button" data-id=${params.data['Id']} data-target="#delete_modal">Sil</button>`
                 },
-                flex: 1
+                flex: 1,
+                minWidth: 200
             },
         ],
+            rowClassRules: {
+                // Öncelik 1: Kullanıcı aktif değilse, türden bağımsız olarak gri yap
+                'rag-gray': params => params.data['Aktif Mi?'] === false,
+
+                // Öncelik 2: Kullanıcı tipi 'Admin' ise ve aktifse yeşil yap
+                'rag-green': params => params.data['Kullanıcı Tipi'] === 'Admin' && params.data['Aktif Mi?'] === true,
+
+                // Öncelik 3: Kullanıcı tipi 'Personel' ise ve aktifse mavi yap
+                'rag-blue': params => params.data['Kullanıcı Tipi'] === 'Personel' && params.data['Aktif Mi?'] === true
+            },
         defaultColDef: {
             filter: "agTextColumnFilter",
             floatingFilter: true,
@@ -245,21 +298,53 @@
                             document.getElementById('email').placeholder = user.email;
                             const selectElement = document.getElementById('userTypeSelect');
                             selectElement.value = user.kullaniciTipi;
-                            const checkbox = document.getElementById('AktifMi');
-                            checkbox.checked = user.aktifMi;
                             $('#edit_modal').modal('show')
                         })
                         .catch(error => {
                             console.error('Error:', error.message);
                         });
-                } 
+                }
                 else {
                     console.error('User ID not found');
+                }
+            }
+            else if (event.target.classList.contains('delete-button')) {
+                const userId = event.target.getAttribute('data-id');
+                if (userId) {
+                    fetch(`/GetUserInfo/${userId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(user => {
+                            document.getElementById('DeleteUserId').value = user.id;
+                            $('#delete_modal').modal('show')
+                        })
+                        .catch(error => {
+                            console.error('Error:', error.message);
+                        });
                 }
             }
         });
     });
 
-
-   
 </script>
+<style>
+    .rag-blue {
+        background-color: #79E0FF
+    }
+
+    .rag-red {
+        background-color: #cc222244;
+    }
+
+    .rag-gray {
+        background-color: #ABABAB;
+    }
+
+    .rag-green {
+        background-color: #33cc3344;
+    }
+</style>

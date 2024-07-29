@@ -11,8 +11,8 @@
     {
         var now = DateOnly.FromDateTime(DateTime.Now);
 
-        // Bu haftanın cumartesisi
-        var startOfWeek = now.AddDays(-(int)now.DayOfWeek + (int)DayOfWeek.Saturday);
+        // Bu haftanın cuması
+        var startOfWeek = now.AddDays(-(int)now.DayOfWeek + (int)DayOfWeek.Friday);
 
         // Geçmiş haftanın cuması (bir hafta önce)
         var startOfPreviousWeek = startOfWeek.AddDays(-7);

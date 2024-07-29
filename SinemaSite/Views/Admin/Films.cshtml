@@ -1,0 +1,259 @@
+﻿@{
+    var user = Context.Items["CurrentUser"] as Kullanici;
+}
+@model Film
+@{
+    ViewData["Title"] = "Ayarlar";
+    Layout = "_LayoutAdmin";
+    var filmler = ViewBag.Filmler as IEnumerable<SinemaSite.Models.Film>;
+}
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Filmler</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header p-2">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a class="nav-link active" href="#show_films" data-toggle="tab">Filmler</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="active tab-pane" id="show_films">
+                                    <div class="col-md-15">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Filmler</h3>
+                                            </div>
+                                            @if (ViewBag.Error != null)
+                                            {
+                                                <div class="col-lg-auto">
+                                                    <div id="error-message" value="@ViewBag.Error"></div>
+                                                    <div class="form-group" style="color: red;">@ViewBag.Error</div
+                                                </div>
+                                            }
+                                            <div id="myGrid" style="height: 600px" class="ag-theme-quartz"></div>
+                                            <div class="modal fade" data-backdrop="false" id="edit_modal">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Filmleri düzenle</h4>
+                                                            <button type="button" data-backdrop="false" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form method="post" asp-action="Films">
+                                                                <div class="modal-body">
+                                                                    <input hidden asp-for="Id" type="text" id="FilmId" class="form-control" placeholder="">
+                                                                    <div class="form-group row">
+                                                                        <label class="col-sm-2 col-form-label">Film Adı:</label>
+                                                                        <div class="col-sm-10">
+                                                                            <input asp-for="Isim" type="text" id="FilmAdi" class="form-control" placeholder="">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label class="col-sm-2 col-form-label">Süre:</label>
+                                                                        <div class="col-sm-10">
+                                                                            <input asp-for="Sure" type="number" id="Sure" class="form-control" placeholder="">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label class="col-sm-2 col-form-label">Film Türleri:</label>
+                                                                          <div class="col-md-10">
+                                                                            <select class="select2" multiple="multiple" data-placeholder="Select a State" style="width: 100%;" id="FilmTurler" asp-for="Turler">
+                                                                                <option value="Aile">Aile</option>
+                                                                                <option value="Aksiyon">Aksiyon</option>
+                                                                                <option value="Animasyon">Animasyon</option>
+                                                                                <option value="Belgesel">Belgesel</option>
+                                                                                <option value="Biyografi">Biyografi</option>
+                                                                                <option value="Dram">Dram</option>
+                                                                                <option value="Fantastik">Fantastik</option>
+                                                                                <option value="Film-Noir">Film-Noir</option>
+                                                                                <option value="Game-Show">Game-Show</option>
+                                                                                <option value="Gerilim">Gerilim</option>
+                                                                                <option value="Gizem">Gizem</option>
+                                                                                <option value="Komedi">Komedi</option>
+                                                                                <option value="Korku">Korku</option>
+                                                                                <option value="Macera">Macera</option>
+                                                                                <option value="Müzik">Müzik</option>
+                                                                                <option value="Polisiye">Polisiye</option>
+                                                                                <option value="Reality">Reality</option>
+                                                                                <option value="Reality-TV">Reality-TV</option>
+                                                                                <option value="Romantik">Romantik</option>
+                                                                                <option value="Savaş">Savaş</option>
+                                                                                <option value="Science Fiction">Science Fiction</option>
+                                                                                <option value="Short">Short</option>
+                                                                                <option value="Spor">Spor</option>
+                                                                                <option value="Suç">Suç</option>
+                                                                                <option value="Tarih">Tarih</option>
+                                                                                <option value="TV Movie">TV Movie</option>
+                                                                                <option value="Western">Western</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                   
+                                                                </div>
+                                                                <div class="modal-footer justify-content-between">
+                                                                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-outline-light">Kapat</button>
+                                                                    <button type="submit" class="btn btn-primary">Düzenlemeyi Kaydet</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                            <!-- /.modal -->
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+
+                                </div>
+                                <!-- /.tab-pane -->
+
+                                <div class="tab-pane" id="other">
+                                </div>
+                                <!-- /.tab-pane -->
+
+
+                            </div>
+                            <!-- /.tab-content -->
+                        </div><!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+</div>
+<script>
+    let gridApi;
+    var filmler = @Html.Raw(ViewBag.Filmler);
+    var rowData = [];
+
+
+    filmler.forEach(function (film) {
+            rowData.push({
+                "Id": film.Id,
+                "Film Adı": film.Isim,
+                "Film Türleri": film.Turler,
+                "Vizyon Tarihi": film.VizyonTarihi,
+                "Süre": film.Sure + " Dk",
+                "Güncelleme Tarihi": film.GuncellemeTarihi,
+                "Düzenle": `<button class = "btn btn-link edit-button" data-id=${film.Id} data-target="#edit_modal">Düzenle</button>`,
+            });
+    });
+
+    const gridOptions = {
+        rowData: rowData,
+        columnDefs: [
+            { field: "Id", hide: true },
+            { 
+                field: "Film Adı",
+                filter: 'agTextColumnFilter'
+            },
+            {
+                field: "Film Türleri",
+                filter: 'agTextColumnFilter'
+            },
+            {
+                field: "Vizyon Tarihi",
+                filter: 'agTextColumnFilter'
+            },
+            {
+                field: "Süre",
+                filter: 'agTextColumnFilter'
+            },
+            { 
+                field: "Güncelleme Tarihi",
+                filter: 'agDateColumnFilter'
+            },
+            {
+                field: "Düzenle",
+                cellRenderer: function (params) {
+                    return `<button class = "btn btn-link edit-button" data-id=${params.data['Id']} data-target="#edit_modal">Düzenle</button>`
+                },
+                flex: 1
+            },
+        ],
+        defaultColDef: {
+            flex: 1,
+            sortable: true,
+            filter: true,
+            resizable: true,
+            floatingFilter: true,
+            minWidth: 100,
+        },
+        rowSelection: "multiple",
+        suppressRowClickSelection: true,
+        pagination: true,
+        paginationPageSize: 10,
+        paginationPageSizeSelector: [10, 20, 30],
+    };
+    const style = document.createElement('style');
+
+    const gridDiv = document.querySelector("#myGrid");
+    gridApi = agGrid.createGrid(gridDiv, gridOptions);
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const gridContainer = document.querySelector('#myGrid');
+
+        gridContainer.addEventListener('click', function (event) {
+            if (event.target.classList.contains('edit-button')) {
+                const filmId = event.target.getAttribute('data-id');
+                if (filmId) {
+                    fetch(`/GetFilmInfo/${filmId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(film => {
+                            document.getElementById('FilmId').value = film.id;
+                            document.getElementById('FilmAdi').value = film.isim;
+                            document.getElementById('Sure').value = film.sure;
+                            const selectElement = document.getElementById('FilmTurler');
+                            $(selectElement).val(null).trigger('change');
+                            film.turler.forEach(tur => {
+                                const option = Array.from(selectElement.options).find(option => option.value == tur);
+                                if (option) {
+                                    option.selected = true;
+                                }
+                            });
+                            $(selectElement).trigger('change');
+                            $('#edit_modal').modal('show');
+                        })
+                        .catch(error => {
+                            console.error('Error:', error.message);
+                        });
+                } else {
+                    console.error('Film ID not found');
+                }
+            }
+        });
+    });
+</script>
+
+
