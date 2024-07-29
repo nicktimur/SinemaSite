@@ -247,13 +247,8 @@
             },
         ],
             rowClassRules: {
-                // Öncelik 1: Kullanıcı aktif değilse, türden bağımsız olarak gri yap
                 'rag-gray': params => params.data['Aktif Mi?'] === false,
-
-                // Öncelik 2: Kullanıcı tipi 'Admin' ise ve aktifse yeşil yap
                 'rag-green': params => params.data['Kullanıcı Tipi'] === 'Admin' && params.data['Aktif Mi?'] === true,
-
-                // Öncelik 3: Kullanıcı tipi 'Personel' ise ve aktifse mavi yap
                 'rag-blue': params => params.data['Kullanıcı Tipi'] === 'Personel' && params.data['Aktif Mi?'] === true
             },
         defaultColDef: {
