@@ -393,6 +393,8 @@ namespace SinemaSite.Controllers
                         s.Id,
                         s.Isim,
                         s.Turler,
+                        s.Sure,
+                        s.VizyonTarihi,
                         s.OlusturulmaTarihi,
                         s.SilinmeTarihi,
                         s.GuncellemeTarihi,
@@ -502,7 +504,6 @@ namespace SinemaSite.Controllers
                     Isim = film.Isim,
                     Sure = film.Sure,
                     Turler = film.Turler,
-                    FilmDurumu = film.FilmDurumu,
                     VizyonTarihi = film.VizyonTarihi,
                     OlusturulmaTarihi = DateTime.Now,
                     ResimYolu = $"/img/movies/{fileName}" // Poster dosya yolu
@@ -607,11 +608,14 @@ namespace SinemaSite.Controllers
         [SendUserInfo]
         [AdminOnly]
         [HttpPost]
-        public IActionResult Films(Film flm)
+        public IActionResult Films(FilmAddingModel flm)
         {
             var film = _db.Films.Where(f => f.Id == flm.Id).FirstOrDefault();
             film.Isim = flm.Isim ?? film.Isim;
             film.Turler = flm.Turler ?? film.Turler;
+            film.VizyonTarihi = flm.VizyonTarihi;
+            film.Sure = flm.Sure ?? film.Sure;
+            film.GuncellemeTarihi = DateTime.Now;
             _db.SaveChanges();
 
             var filmler = _db.Films

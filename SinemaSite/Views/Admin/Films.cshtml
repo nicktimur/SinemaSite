@@ -108,7 +108,14 @@
                                                                             </select>
                                                                         </div>
                                                                     </div>
-                                                                   
+                                                                    <div class="col-lg-auto">
+                                                                        <div class="form-group row">
+                                                                            <label for="sunumTarihi" class="col-sm-2 col-form-label">Vizyon Tarihi:</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input asp-for="VizyonTarihi" type="date" class="form-control" id="vizyonTarihi" aria-describedby="dateHelp" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                                 <div class="modal-footer justify-content-between">
                                                                     <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-outline-light">Kapat</button>
@@ -243,6 +250,8 @@
                                 }
                             });
                             $(selectElement).trigger('change');
+                            const vizyonTarihiInput = document.getElementById('vizyonTarihi');
+                            vizyonTarihiInput.value = film.vizyonTarihi;
                             $('#edit_modal').modal('show');
                         })
                         .catch(error => {
